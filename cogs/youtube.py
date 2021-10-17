@@ -53,9 +53,6 @@ class YTDLSource(discord.PCMVolumeTransformer):
         self.web_url = data.get('webpage_url')
         self.duration = data.get('duration')
 
-        # YTDL info dicts (data) have other useful information you might want
-        # https://github.com/rg3/youtube-dl/blob/master/README.md
-
     def __getitem__(self, item: str):
         """Allows us to access attributes similar to a dict.
         This is only useful when you are NOT downloading.
@@ -227,7 +224,7 @@ class Music(commands.Cog):
     
 
     @commands.command(name='join', aliases=['dolacz', 'polacz', 'connect', 'j'], description="connects to voice")
-    async def connect_(self, ctx, *, channel: discord.VoiceChannel=None):
+    async def _connect(self, ctx, *, channel: discord.VoiceChannel=None):
         """Connect to voice.
         Parameters
         ------------
@@ -263,7 +260,7 @@ class Music(commands.Cog):
         await ctx.send(f'**OTO KURWA JESTEM NA `{channel}`**')
 
     @commands.command(name='play', aliases=['sing','p'], description="streams music")
-    async def play_(self, ctx, *, search: str):
+    async def _play(self, ctx, *, search: str):
         """Request a song and add it to the queue.
         This command attempts to join a valid voice channel if the bot is not already in one.
         Uses YTDL to automatically search and retrieve a song.
@@ -288,7 +285,7 @@ class Music(commands.Cog):
         await player.queue.put(source)
 
     @commands.command(name='pause', description="pauses music")
-    async def pause_(self, ctx):
+    async def _pause(self, ctx):
         """Pause the currently playing song."""
         vc = ctx.voice_client
 
@@ -302,7 +299,7 @@ class Music(commands.Cog):
         await ctx.send("Pauza ⏸️")
 
     @commands.command(name='resume', description="resumes music")
-    async def resume_(self, ctx):
+    async def _resume(self, ctx):
         """Resume the currently paused song."""
         vc = ctx.voice_client
 
@@ -316,7 +313,7 @@ class Music(commands.Cog):
         await ctx.send("NAKURWIAMY NA NOWO! ⏯️")
 
     @commands.command(name='skip', aliases=['nastepna'], description="skips to next song in queue")
-    async def skip_(self, ctx):
+    async def _skip(self, ctx):
         """Skip the song."""
         vc = ctx.voice_client
 
@@ -332,7 +329,7 @@ class Music(commands.Cog):
         vc.stop()
     
     @commands.command(name='remove', aliases=['rm', 'rem'], description="removes specified song from queue")
-    async def remove_(self, ctx, pos : int=None):
+    async def _remove(self, ctx, pos : int=None):
         """Removes specified song from queue"""
 
         vc = ctx.voice_client
@@ -355,7 +352,7 @@ class Music(commands.Cog):
                 await ctx.send(embed=embed)
     
     @commands.command(name='clear', aliases=['clr', 'cl', 'cr'], description="clears entire queue")
-    async def clear_(self, ctx):
+    async def _clear(self, ctx):
         """Deletes entire queue of upcoming songs."""
 
         vc = ctx.voice_client
@@ -369,7 +366,7 @@ class Music(commands.Cog):
         await ctx.send('**wYCZYSZCZONO**')
 
     @commands.command(name='queue', aliases=['q', 'kolejka', 'playlist', 'que'], description="shows the queue")
-    async def queue_info(self, ctx):
+    async def _queue_info(self, ctx):
         """Retrieve a basic queue of upcoming songs."""
         vc = ctx.voice_client
 
@@ -402,7 +399,7 @@ class Music(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name='np', aliases=['song', 'current', 'currentsong', 'playing', 'piosenka'], description="shows the current playing song")
-    async def now_playing_(self, ctx):
+    async def _now_playing(self, ctx):
         """Display information about the currently playing song."""
         vc = ctx.voice_client
 
@@ -430,7 +427,7 @@ class Music(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name='volume', aliases=['vol', 'v'], description="changes Kunkels' volume")
-    async def change_volume(self, ctx, *, vol: float=None):
+    async def _change_volume(self, ctx, *, vol: float=None):
         """Change the player volume.
         Parameters
         ------------
@@ -460,8 +457,8 @@ class Music(commands.Cog):
         embed = discord.Embed(title="", description=f'**`{ctx.author}`** ustawil glosnosc na **{vol}%**', color=discord.Color.green())
         await ctx.send(embed=embed)
 
-    @commands.command(name='leave', aliases=["stop", "dc", "disconnect", "bye"], description="stops music and disconnects from voice")
-    async def leave_(self, ctx):
+    @commands.command(name='leave', aliases=["stop", "dc", "disconnect", "bye", "wypierdalaj"], description="stops music and disconnects from voice")
+    async def _leave_(self, ctx):
         """Stop the currently playing song and destroy the player.
         !Warning!
             This will destroy the player assigned to your guild, also deleting any queued songs and settings.

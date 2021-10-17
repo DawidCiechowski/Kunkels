@@ -274,7 +274,7 @@ class Music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc:
-            await ctx.invoke(self.connect_)
+            await ctx.invoke(self._connect)
 
         player = self.get_player(ctx)
 

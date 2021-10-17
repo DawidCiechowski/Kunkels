@@ -1,0 +1,7 @@
+- [ ] Add queueing system
+- [ ] Speed up the download speed
+- [ ] Add support for playlist playing
+- [ ] Refactor codebase
+- [ ] Docstrings
+- [ ] Decouple
+- [ ] Add Spotify support

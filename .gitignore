@@ -1,0 +1,4 @@
+*.env
+song.mp3
+**/__pycache__
+**/test.py

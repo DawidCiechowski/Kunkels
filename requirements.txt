@@ -2,3 +2,4 @@ discord.py
 youtube_dl
 python_dotenv
 async_timeout
+PyNaCl

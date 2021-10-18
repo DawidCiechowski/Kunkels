@@ -52,7 +52,7 @@ class BotUtils(commands.Cog):
 
         await ctx.send("Not implemented")
 
-    @commands.command(name="clear", aliases=["wyczysc"])
+    @commands.command(name="clr", aliases=["wyczysc"])
     async def _clear(self, ctx, *, amount: int = 5):
         """Clear messages from the text channel
 

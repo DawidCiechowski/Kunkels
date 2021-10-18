@@ -29,9 +29,9 @@ class Greetings(commands.Cog):
     async def szczekaj(self, ctx):
         await ctx.send(f"{ctx.message.author} Miau?")
         
-    @commands.command(aliases=["wycisz", "zamknij ryj", "morda", "stfu"])
-    @commands.has_role("Eddy")
-    async def mute(self, ctx, *, member: discord.Member):
+    @commands.command(name = "mute", aliases=["wycisz", "zamknij ryj", "morda", "stfu"])
+    # @commands.has_role("Eddy")
+    async def _mute(self, ctx, *, member: discord.Member):
         if not member:
             message = f"Czerwony **mute** *<Jakas menda>*"
             embed = discord.Embed(title="__Uzycie__", message=message, color=discord.Color.orange())

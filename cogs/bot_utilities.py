@@ -59,7 +59,7 @@ class BotUtils(commands.Cog):
         Args:
             amount (int, optional): The amount of messages to remove. Defaults to 5.
         """
-        await ctx.channel.purge(limit=int(amount))
+        await ctx.channel.purge(limit=int(amount) + 1)
 
     @commands.command(name="ban", aliases=["zbanuj"])
     @commands.has_permissions(ban_members=True)

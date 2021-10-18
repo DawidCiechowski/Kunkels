@@ -79,7 +79,7 @@ class BotUtils(commands.Cog):
         if member is None:
             message = f"Czerwony **ban** *<Jakas menda>*\nDodatkowe parametry: *<Powod wyjebania>*\nOpcjonalne nazwy komendy: [**zbanuj**]"
             embed = discord.Embed(
-                title="__Uzycie__", description=message, color=discord.Colour.orange()
+                title="__Uzycie__", description=message, color=discord.Color.orange()
             )
             await ctx.send(embed=embed)
             return
@@ -107,7 +107,7 @@ class BotUtils(commands.Cog):
             embed = discord.Embed(
                 title="__Uzycie__",
                 description=message,
-                color=discord.Colour.dark_gold(),
+                color=discord.Color.red(),
             )
             await ctx.send(embed=embed)
             return
@@ -115,7 +115,7 @@ class BotUtils(commands.Cog):
         embed = discord.Embed(
             title="Wypierdolenie",
             description=f"{ctx.message.author.name} wyjebal {member.name}. Powod:\n{reason}",
-            color=discord.Color.dark_magenta,
+            color=discord.Color.dark_magenta(),
         )
         await ctx.send(embed=embed)
         await member.kick(reason=reason)
@@ -126,7 +126,7 @@ class BotUtils(commands.Cog):
         if member is None:
             message = f"Czerwony **unban** *<Jakas menda>*\nOpcjonalne nazwy komendy: [**odbanuj**]"
             embed = discord.Embed(
-                title="__Uzycie__", description=message, color=discord.Colour.orange()
+                title="__Uzycie__", description=message, color=discord.Color.orange()
             )
             await ctx.send(embed=embed)
             return
@@ -134,7 +134,7 @@ class BotUtils(commands.Cog):
         embed = discord.Embed(
             title="Odpierdolenie",
             description=f"{ctx.message.author.name} przywrocil {member.name}.",
-            color=discord.Color.dark_magenta,
+            color=discord.Color.dark_magenta(),
         )
         await ctx.send(embed=embed)
         await member.unban()

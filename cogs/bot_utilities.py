@@ -5,7 +5,7 @@ from discord.ext import commands
 from discord.ext.commands import Bot
 
 
-class Utils(commands.Cog):
+class BotUtils(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
         self._last_member = None
@@ -140,4 +140,4 @@ class Utils(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Utils(bot))
+    bot.add_cog(BotUtils(bot))

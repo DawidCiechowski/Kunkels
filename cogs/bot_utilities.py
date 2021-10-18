@@ -79,7 +79,7 @@ class BotUtils(commands.Cog):
         if member is None:
             message = f"Czerwony **ban** *<Jakas menda>*\nDodatkowe parametry: *<Powod wyjebania>*\nOpcjonalne nazwy komendy: [**zbanuj**]"
             embed = discord.Embed(
-                title="__Uzycie__", description=message, color=discord.Color.orange()
+                title="__Uzycie__", description=message, color=discord.Colour.orange()
             )
             await ctx.send(embed=embed)
             return
@@ -105,7 +105,9 @@ class BotUtils(commands.Cog):
         if member is None:
             message = f"Czerwony **kick** *<Jakas menda>*\nDodatkowe parametry: *<Powod wyjebania>*\nOpcjonalne nazwy komendy: [**wypierdol**, **wyjeb**, **wykop**]"
             embed = discord.Embed(
-                title="__Uzycie__", description=message, color=discord.Color.orange()
+                title="__Uzycie__",
+                description=message,
+                color=discord.Colour.dark_gold(),
             )
             await ctx.send(embed=embed)
             return
@@ -124,7 +126,7 @@ class BotUtils(commands.Cog):
         if member is None:
             message = f"Czerwony **unban** *<Jakas menda>*\nOpcjonalne nazwy komendy: [**odbanuj**]"
             embed = discord.Embed(
-                title="__Uzycie__", description=message, color=discord.Color.orange()
+                title="__Uzycie__", description=message, color=discord.Colour.orange()
             )
             await ctx.send(embed=embed)
             return

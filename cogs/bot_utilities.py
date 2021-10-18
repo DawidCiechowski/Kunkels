@@ -33,7 +33,7 @@ class BotUtils(commands.Cog):
         await ctx.send(f"{ctx.message.author} Miau?")
 
     @commands.command(name="mute", aliases=["wycisz", "zamknij ryj", "morda", "stfu"])
-    # @commands.has_role("Eddy")
+    @commands.has_permissions(mute_members=True)
     async def _mute(
         self, ctx, *, member: Optional[discord.Member] = None, time: Optional[int] = 5
     ):
@@ -73,7 +73,6 @@ class BotUtils(commands.Cog):
         """Ban a user from a channel
 
         Args:
-            ctx ([type]): [description]
             member (Optional[discord.Member], optional): A member of discord channel. Defaults to None.
             reason (Optional[str], optional): A reason for banning the user. Defaults to "".
         """
@@ -120,7 +119,7 @@ class BotUtils(commands.Cog):
         await member.kick(reason=reason)
 
     @commands.command(name="unban", aliases=["odbanuj"])
-    @commands.has_permissions(unban_members=True)
+    @commands.has_permissions(administrator=True)
     async def _unban(self, ctx, *, member: Optional[discord.Member] = None):
         if member is None:
             message = f"Czerwony **unban** *<Jakas menda>*\nOpcjonalne nazwy komendy: [**odbanuj**]"

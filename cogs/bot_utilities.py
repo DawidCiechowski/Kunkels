@@ -98,7 +98,6 @@ class BotUtils(commands.Cog):
         """Kick a user from discord channel
 
         Args:
-            ctx ([type]): [description]
             member (Optional[discord.Member], optional): A member of a Discord. Defaults to None.
             reason (Optional[str], optional): A reason for kicking the user. Defaults to "".
         """

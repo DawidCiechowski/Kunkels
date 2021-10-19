@@ -3,3 +3,5 @@ youtube_dl
 python_dotenv
 async_timeout
 PyNaCl
+requests
+dataclasses_json

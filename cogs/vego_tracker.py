@@ -23,10 +23,24 @@ class Tracker(commands.Cog):
         aliases=["szukaj"],
         description="Finds information in regards to a summoner",
     )
-    async def _summoner(self, ctx, *, summoner: str):
+    async def _summoner(self, ctx, *summoner: str):
         """Generate information about summoner
 
         Args:
             summoner (str): A summoner's name
         """
-        pass
+        summoner_name = " ".join(summoner)
+        summoner_data = self.api.summoner_search(summoner_name)
+
+        embed_title = f"**Summoner Search**"
+        embed_message = (
+            f"*Name*: {summoner_data.name}\n*Level:* {summoner_data.summoner_level}"
+        )
+
+        embed = discord.Embed(title=embed_title, description=embed_message)
+
+        await ctx.send(embed=embed)
+
+
+def setup(bot: Bot):
+    bot.add_cog(Tracker(bot))

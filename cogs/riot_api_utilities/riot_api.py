@@ -2,9 +2,9 @@ from typing import Tuple
 
 import requests
 
-from api_dataclasses.match import Match
-from api_dataclasses.match_timeline import MatchTimeline
-from api_dataclasses.summoner import Summoner
+from .api_dataclasses.match import Match
+from .api_dataclasses.match_timeline import MatchTimeline
+from .api_dataclasses.summoner import Summoner
 
 
 class RiotApi:

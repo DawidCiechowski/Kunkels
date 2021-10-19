@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
 
-from riot_api_utilities.riot_api import RiotApi
+from cogs.riot_api_utilities.riot_api import RiotApi
 
 RIOT_API_TOKEN = os.getenv("RIOT_API_TOKEN")
 

@@ -114,7 +114,7 @@ class RiotApi:
         --------
             Union[SpectatorData, bool]: Either dataclass containing match data or False if summoner not playing
         """
-        url = f"https://euw1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/{summoner_id}"
+        url = f"https://eun1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/{summoner_id}"
         response = requests.get(url, headers=self.headers)
 
         if response.status_code == 404:
@@ -132,6 +132,7 @@ class RiotApi:
             Union[SpectatorData, bool]: Either data of a game, if available or False, if game is not played
         """
         summoner = self.summoner_search(summoners_name)
+        print(summoner.id)
         spectator_data = self.__get_spectator_data(summoner.id)
 
         if not spectator_data:

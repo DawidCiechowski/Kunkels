@@ -7,6 +7,7 @@ from discord.ext import commands
 from discord.ext.commands import Bot
 
 from cogs.riot_api_utilities.riot_api import RiotApi
+from cogs.riot_api_utilities.api_dataclasses.champion import champions_data
 
 RIOT_API_TOKEN = os.getenv("RIOT_API_TOKEN")
 
@@ -61,7 +62,7 @@ class Tracker(commands.Cog):
         damage_taken_chart.sort()
         damage_taken_index = damage_taken_chart.index(total_damage_taken) + 1
 
-        embed_title = f"__SUMMONER SEARCH__"
+        embed_title = "__SUMMONER SEARCH__"
         embed_message = f"""```ini
 [Generalne informacje]```
                             
@@ -103,11 +104,66 @@ Informacje ofensywne```
         """Send information in regards to the summoner
 
         Args:
+        -----
             summoner (str): A summoner's name
         """
         summoner_name = " ".join(summoner)
         embed = self.__generate_summoner_embed(summoner_name)
         await ctx.send(embed=embed)
+
+    def __generate_spectate_embed(self, summoner_name: str):
+        """Generate a discord.Embed from spectate data.
+        Ritos api is so freeaking baaaad, it literally doesnt give any useful information
+
+        Args:
+        -----
+            summoner_name (str): A name of a summoner, to search data for
+
+        Returns:
+        -------
+            discord.Embed: An embedded message generated from data, or a simple embed showcasing the player is not currently in-game
+        """
+        game_data = self.api.summoners_current_game(summoner_name)
+
+        if not game_data:
+            embed = discord.Embed(
+                title="Nie gra",
+                description="Vego nie gra w tym momencie",
+                color=discord.Color.dark_gold(),
+            )
+            return embed
+
+        # ------------------------ Game Data -----------------------------------
+        summoner_data = [
+            participant
+            for participant in game_data.participants
+            if participant.summoner_name.lower() == summoner_name.lower()
+        ][0]
+        champ_data = [
+            data
+            for data in champions_data.data
+            if int(data.key) == summoner_data.champion_id
+        ][0]
+        game_mode = game_data.game_mode
+        summoner_name = summoner_data.summoner_name
+        champion_name = champ_data.name
+        game_minutes = int(game_data.game_length / 60)
+        game_seconds = game_data.game_length % 60
+
+        title = "__Tracker__"
+        description = f"""
+        ```ini
+[Generalne informacje]
+        ```
+        **Nick:** {summoner_name}
+        **Mode:** {game_mode}
+        **Gra:** {champion_name}
+        **Czas gry:** {game_minutes}:{game_seconds}
+        """
+
+        return discord.Embed(
+            title=title, description=description, color=discord.Color.dark_blue()
+        )
 
     @commands.command(
         name="vego",
@@ -115,18 +171,9 @@ Informacje ofensywne```
         description="Check if Vego is online and playing lol, and if so, show statistics",
     )
     async def _vego(self, ctx):
-        summoner_data = self.api.summoners_current_game("vegø")
+        embed = self.__generate_spectate_embed("Thebausffs")
 
-        if not summoner_data:
-            embed = discord.Embed(
-                title="Nie gra",
-                description="Vego nie gra w tym momencie",
-                color=discord.Color.dark_gold(),
-            )
-            await ctx.send(embed=embed)
-            return
-
-        await ctx.send("Not implemented yet")
+        await ctx.send(embed=embed)
 
 
 def setup(bot: Bot):

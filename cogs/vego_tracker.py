@@ -23,20 +23,9 @@ class Tracker(commands.Cog):
     def _convert_unix_timestamp(timestamp: int) -> str:
         return datetime.utcfromtimestamp(timestamp).strftime("%H:%M %d-%m-%Y")
 
-    @commands.command(
-        name="summoner",
-        aliases=["szukaj"],
-        description="Finds information in regards to a summoner",
-    )
-    async def _summoner(self, ctx, *summoner: str):
-        """Generate information about summoner
-
-        Args:
-            summoner (str): A summoner's name
-        """
-        summoner_name = " ".join(summoner)
-        summoner_data = self.api.summoner_search(summoner_name)
-        match, timeline = self.api.summoners_last_game(summoner_name)
+    def __generate_summoner_embed(self, summoner: str) -> discord.Embed:
+        summoner_data = self.api.summoner_search(summoner)
+        match, _ = self.api.summoners_last_game(summoner)
         match_timestamp = self._convert_unix_timestamp(match.info.game_creation / 1000)
         game_mode = match.info.game_mode
         damage_chart = []
@@ -101,11 +90,43 @@ Informacje ofensywne```
                             **Teammaci wyleczeni:** {teammate_healed_damage}
                             **Polozone wardy**: {wards_placed}"""
 
-        embed = discord.Embed(
+        return discord.Embed(
             title=embed_title, description=embed_message, color=discord.Color.blue()
         )
 
+    @commands.command(
+        name="summoner",
+        aliases=["szukaj"],
+        description="Finds information in regards to a summoner",
+    )
+    async def _summoner(self, ctx, *summoner: str):
+        """Send information in regards to the summoner
+
+        Args:
+            summoner (str): A summoner's name
+        """
+        summoner_name = " ".join(summoner)
+        embed = self.__generate_summoner_embed(summoner_name)
         await ctx.send(embed=embed)
+
+    @commands.command(
+        name="vego",
+        aliases=["grubas", "swinia"],
+        description="Check if Vego is online and playing lol, and if so, show statistics",
+    )
+    async def _vego(self, ctx):
+        summoner_data = self.api.summoners_current_game("vegø")
+
+        if not summoner_data:
+            embed = discord.Embed(
+                title="Nie gra",
+                description="Vego nie gra w tym momencie",
+                color=discord.Color.dark_gold(),
+            )
+            await ctx.send(embed=embed)
+            return
+
+        await ctx.send("Not implemented yet")
 
 
 def setup(bot: Bot):

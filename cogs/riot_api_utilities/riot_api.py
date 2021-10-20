@@ -1,10 +1,13 @@
-from typing import Tuple
+from typing import Tuple, Union
 
-import requests
+import requests, code
+
+from cogs.riot_api_utilities.api_dataclasses.spectator import SpectatorData
 
 from .api_dataclasses.match import Match
 from .api_dataclasses.match_timeline import MatchTimeline
 from .api_dataclasses.summoner import Summoner
+from .api_dataclasses.spectator import SpectatorData
 
 
 class RiotApi:
@@ -99,3 +102,39 @@ class RiotApi:
         return self.__get_match_data(summoner.puuid), self.__get_match_timeline(
             summoner.puuid
         )
+
+    def __get_spectator_data(self, summoner_id: int) -> Union[SpectatorData, bool]:
+        """Check if summoner is playing and either return False if not, or dataclass containing current match data
+
+        Args:
+        -----
+            summoner_id (int): An encrypted id of a user
+
+        Returns:
+        --------
+            Union[SpectatorData, bool]: Either dataclass containing match data or False if summoner not playing
+        """
+        url = f"https://euw1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/{summoner_id}"
+        response = requests.get(url, headers=self.headers)
+
+        if response.status_code == 404:
+            return False
+
+        return SpectatorData.from_dict(response.json())
+
+    def summoners_current_game(self, summoners_name: str) -> Union[SpectatorData, bool]:
+        """Current game data, if available
+
+        Args:
+            summoners_name (str): Name of a summoner to search data for
+
+        Returns:
+            Union[SpectatorData, bool]: Either data of a game, if available or False, if game is not played
+        """
+        summoner = self.summoner_search(summoners_name)
+        spectator_data = self.__get_spectator_data(summoner.id)
+
+        if not spectator_data:
+            return False
+
+        return spectator_data

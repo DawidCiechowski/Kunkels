@@ -62,6 +62,9 @@ class Tracker(commands.Cog):
                     participant.total_heal - participant.total_heals_on_teammates
                 )
                 teammate_healed_damage = participant.total_heals_on_teammates
+                true_damage_dealt = participant.true_damage_dealt_to_champions
+                magic_damage_dealt = participant.magic_damage_dealt_to_champions
+                physical_damage_dealt = participant.physical_damage_dealt_to_champions
 
         damage_chart.sort()
         damage_index = damage_chart.index(total_damage_to_champions) + 1
@@ -70,21 +73,37 @@ class Tracker(commands.Cog):
         damage_taken_index = damage_taken_chart.index(total_damage_taken) + 1
 
         embed_title = f"__SUMMONER SEARCH__"
-        embed_message = f"""**Nick**: {summoner_data.name}
+        embed_message = f"""```ini
+[Generalne informacje]```
+                            
+                            **Nick**: {summoner_data.name}
                             **Poziom:** {summoner_data.summoner_level}
                             **Ostatni Mecz:** {match_timestamp}\n**Mode:** {game_mode}
                             **KDA:** {kills}/{deaths}/{assists}\n**Wygrana:** {win}
                             **Champ:** {champion}
                             **Rola:** {role}
-                            **Dmg zadany innym:** {total_damage_to_champions}
+                            
+                            ```fix
+Informacje ofensywne```
+                            
+                            **Dmg calkowity zadany innym:** {total_damage_to_champions}
                             **Miejsce pod wzgledem dmg:** {damage_index}
-                            **Polozone wardy**: {wards_placed}
+                            **Zadany dmg magiczny:** {magic_damage_dealt}
+                            **Zadany dmg fizyczny:** {physical_damage_dealt}
+                            **Zadany true dmg:** {true_damage_dealt}
+                            
+                            ```fix
+=Informacje defensywne```
+                            
                             **Calkowity dmg przyjety:** {total_damage_taken}
                             **Miejsce pod wzgledem przyjetego dmg:** {damage_taken_index}
                             **Dmg wyleczony:** {self_healed_damage}
-                            **Teammaci wyleczeni:** {teammate_healed_damage}"""
+                            **Teammaci wyleczeni:** {teammate_healed_damage}
+                            **Polozone wardy**: {wards_placed}"""
 
-        embed = discord.Embed(title=embed_title, description=embed_message)
+        embed = discord.Embed(
+            title=embed_title, description=embed_message, color=discord.Color.blue()
+        )
 
         await ctx.send(embed=embed)
 

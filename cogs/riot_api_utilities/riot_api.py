@@ -96,6 +96,6 @@ class RiotApi:
         """
         summoner = self.summoner_search(summoners_name)
 
-        return self.__get_match_data(summoner.puuid, True), self.__get_match_timeline(
-            summoner.puuid, True
+        return self.__get_match_data(summoner.puuid), self.__get_match_timeline(
+            summoner.puuid
         )

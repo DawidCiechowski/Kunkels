@@ -5,3 +5,6 @@
 - [x] Docstrings
 - [ ] Decouple
 - [ ] Add Spotify support
+- [ ] Add support for multiple rito servers
+- [ ] Expand Rito apis into multiple games
+- [ ] Finish Vego tracker

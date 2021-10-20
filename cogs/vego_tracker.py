@@ -40,8 +40,12 @@ class Tracker(commands.Cog):
         match_timestamp = self._convert_unix_timestamp(match.info.game_creation / 1000)
         game_mode = match.info.game_mode
         damage_chart = []
+        damage_taken_chart = []
         for participant in match.info.participants:
             damage_chart.append(participant.total_damage_dealt_to_champions)
+            damage_taken_chart.append(
+                participant.total_damage_taken + participant.damage_self_mitigated
+            )
             if summoner_data.puuid == participant.puuid:
                 role = participant.role
                 deaths = participant.deaths
@@ -62,6 +66,9 @@ class Tracker(commands.Cog):
         damage_chart.sort()
         damage_index = damage_chart.index(total_damage_to_champions) + 1
 
+        damage_taken_chart.sort()
+        damage_taken_index = damage_taken_chart.index(total_damage_taken) + 1
+
         embed_title = f"__SUMMONER SEARCH__"
         embed_message = f"""**Nick**: {summoner_data.name}
                             **Poziom:** {summoner_data.summoner_level}
@@ -73,6 +80,7 @@ class Tracker(commands.Cog):
                             **Miejsce pod wzgledem dmg:** {damage_index}
                             **Polozone wardy**: {wards_placed}
                             **Calkowity dmg przyjety:** {total_damage_taken}
+                            **Miejsce pod wzgledem przyjetego dmg:** {damage_taken_index}
                             **Dmg wyleczony:** {self_healed_damage}
                             **Teammaci wyleczeni:** {teammate_healed_damage}"""
 

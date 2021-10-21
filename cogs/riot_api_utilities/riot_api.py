@@ -132,8 +132,7 @@ class RiotApi:
             Union[SpectatorData, bool]: Either data of a game, if available or False, if game is not played
         """
         summoner = self.summoner_search(summoners_name)
-        print(summoner.id)
-        spectator_data = self.__get_spectator_data(summoner.id)
+        spectator_data = self.__get_spectator_data(summoner.summoner_id)
 
         if not spectator_data:
             return False

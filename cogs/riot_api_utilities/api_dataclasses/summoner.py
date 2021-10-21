@@ -5,7 +5,7 @@ from dataclasses_json import dataclass_json, LetterCase, config
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass
 class Summoner:
-    summonre_id: str = field(metadata=config(field_name="id"))
+    summoner_id: str = field(metadata=config(field_name="id"))
     account_id: str
     puuid: str
     name: str

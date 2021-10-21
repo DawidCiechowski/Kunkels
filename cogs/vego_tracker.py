@@ -171,7 +171,7 @@ Informacje ofensywne```
         description="Check if Vego is online and playing lol, and if so, show statistics",
     )
     async def _vego(self, ctx):
-        embed = self.__generate_spectate_embed("Thebausffs")
+        embed = self.__generate_spectate_embed("vegø")
 
         await ctx.send(embed=embed)
 

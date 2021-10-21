@@ -17,4 +17,4 @@
 
 - Rito's spectator api is just sh*t. Find some other source for live data and keep the placeholder from Spectator api for now. 
 
--Seperate Riot's API bot functionality and vego_tracker funcs. Rito's API functionality must be generic, and vego tracker is supposed to use it. They are seperate entities. Vego's tracker is just parameterized to get info about vego. 
+- Seperate Riot's API bot functionality and vego_tracker funcs. Rito's API functionality must be generic, and vego tracker is supposed to use it. They are seperate entities. Vego's tracker is just parameterized to get info about vego. 

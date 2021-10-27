@@ -7,7 +7,7 @@
 - [ ] Add Spotify support
 - [ ] Add support for multiple rito servers
 - [ ] Expand Rito apis into multiple games
-- [ ] Finish Vego tracker
+- [ ] Finish Vego tracker - extension, use discord's task api for asynchronous monitoring of Vego's games, without impacting the rest of functionality
 - [ ] Apply to RITO for perma app key, cause ATM API key has to be refreshed.
 - [ ] Improve discord.Embed formatting
 

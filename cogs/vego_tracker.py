@@ -1,10 +1,12 @@
-from typing import Optional
+from typing import Optional, Union, Tuple
 import os
 from datetime import datetime
+import time
 
 import discord
 from discord.ext import commands
 from discord.ext.commands import Bot
+from cogs.riot_api_utilities.api_dataclasses.spectator import SpectatorData
 
 from cogs.riot_api_utilities.riot_api import RiotApi
 from cogs.riot_api_utilities.api_dataclasses.champion import champions_data
@@ -111,7 +113,9 @@ Informacje ofensywne```
         embed = self.__generate_summoner_embed(summoner_name)
         await ctx.send(embed=embed)
 
-    def __generate_spectate_embed(self, summoner_name: str):
+    def __generate_spectate_embed(
+        self, summoner_name: str
+    ) -> Tuple[Union[discord.Embed, bool], Optional[SpectatorData]]:
         """Generate a discord.Embed from spectate data.
         Ritos api is so freeaking baaaad, it literally doesnt give any useful information
 
@@ -126,12 +130,7 @@ Informacje ofensywne```
         game_data = self.api.summoners_current_game(summoner_name)
 
         if not game_data:
-            embed = discord.Embed(
-                title="Nie gra",
-                description="Vego nie gra w tym momencie",
-                color=discord.Color.dark_gold(),
-            )
-            return embed
+            return False, None
 
         # ------------------------ Game Data -----------------------------------
         summoner_data = [
@@ -161,8 +160,11 @@ Informacje ofensywne```
         **Czas gry:** {game_minutes}:{game_seconds}
         """
 
-        return discord.Embed(
-            title=title, description=description, color=discord.Color.dark_blue()
+        return (
+            discord.Embed(
+                title=title, description=description, color=discord.Color.dark_blue()
+            ),
+            game_data,
         )
 
     @commands.command(
@@ -171,9 +173,23 @@ Informacje ofensywne```
         description="Check if Vego is online and playing lol, and if so, show statistics",
     )
     async def _vego(self, ctx):
-        embed = self.__generate_spectate_embed("vegø")
-
-        await ctx.send(embed=embed)
+        while True:
+            embed, game_data = self.__generate_spectate_embed("vegø")
+            if not embed or not game_data:
+                print("Not playing")
+                time.sleep(5)
+                continue
+            else:
+                last_message = await ctx.channel.history(limit=1)
+                if last_message.content() == f"Game ID: {game_id}":
+                    print("Playing the same game")
+                    time.sleep(5)
+                    continue
+                else:
+                    await ctx.send(embed=embed)
+                    game_id = game_data.game_id
+                    await ctx.send(f"Game ID: {game_id}")
+                    time.sleep(5)
 
 
 def setup(bot: Bot):

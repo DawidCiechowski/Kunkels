@@ -4,7 +4,7 @@ from datetime import datetime
 import time
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord.ext.commands import Bot
 from cogs.riot_api_utilities.api_dataclasses.spectator import SpectatorData
 
@@ -167,29 +167,21 @@ Informacje ofensywne```
             game_data,
         )
 
-    @commands.command(
-        name="vego",
-        aliases=["grubas", "swinia"],
-        description="Check if Vego is online and playing lol, and if so, show statistics",
-    )
-    async def _vego(self, ctx):
-        while True:
-            embed, game_data = self.__generate_spectate_embed("vegø")
-            if not embed or not game_data:
-                print("Not playing")
-                time.sleep(5)
-                continue
-            else:
-                last_message = await ctx.channel.history(limit=1)
-                if last_message.content() == f"Game ID: {game_id}":
-                    print("Playing the same game")
-                    time.sleep(5)
-                    continue
-                else:
-                    await ctx.send(embed=embed)
-                    game_id = game_data.game_id
-                    await ctx.send(f"Game ID: {game_id}")
-                    time.sleep(5)
+    @tasks.loop(seconds=2)
+    async def _vego(self):
+        embed, game_data = self.__generate_spectate_embed("vegø")
+        if not embed or not game_data:
+            print("Not playing")
+        else:
+            print("TEST")
+            channel = discord.utils.get(
+                self.bot.get_all_channels(), name="vego-tracker"
+            )
+            await channel.send(embed=embed)
+
+    @_vego.before_loop
+    async def await_vego(self):
+        self.bot.wait_until_ready()
 
 
 def setup(bot: Bot):

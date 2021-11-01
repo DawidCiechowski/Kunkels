@@ -114,6 +114,10 @@ Informacje ofensywne```
             summoner (str): A summoner's name
         """
         summoner_name = " ".join(summoner)
+
+        if summoner_name == "vego":
+            summoner_name = "vegø"
+
         embed = self.__generate_summoner_embed(summoner_name)
         await ctx.send(embed=embed)
 
@@ -174,12 +178,16 @@ Informacje ofensywne```
     @tasks.loop(minutes=5)
     async def _vego(self):
         embed, game_data = self.__generate_spectate_embed("vegø")
+        channel = discord.utils.get(self.bot.get_all_channels(), name="vego-trackerr")
+        m = await channel.fetch_message(channel.last_message_id)
+        embed_title = m.embeds[0].title
+
         if not embed or not game_data:
+            if embed_title == "__Tracker__":
+                summonr_embed = self.__generate_summoner_embed("vegø")
+                await channel.send(embed=summonr_embed)
             return
 
-        summonr_embed = self.__generate_summoner_embed("vegø")
-        channel = discord.utils.get(self.bot.get_all_channels(), name="vego-tracker")
-        await channel.send(embed=summonr_embed)
         await channel.send(embed=embed)
 
     @_vego.before_loop

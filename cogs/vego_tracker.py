@@ -62,10 +62,10 @@ class Tracker(commands.Cog):
                 magic_damage_dealt = participant.magic_damage_dealt_to_champions
                 physical_damage_dealt = participant.physical_damage_dealt_to_champions
 
-        damage_chart.sort()
+        damage_chart.sort(reverse=True)
         damage_index = damage_chart.index(total_damage_to_champions) + 1
 
-        damage_taken_chart.sort()
+        damage_taken_chart.sort(reverse=True)
         damage_taken_index = damage_taken_chart.index(total_damage_taken) + 1
 
         embed_title = "__SUMMONER SEARCH__"

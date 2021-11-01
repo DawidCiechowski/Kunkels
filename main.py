@@ -1,24 +1,17 @@
-# import os
+import os
 
-# from discord.ext import commands
+from discord.ext import commands
 
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
-# load_dotenv()
+load_dotenv()
 
-# TOKEN = os.getenv("DISCORD_TOKEN")
+TOKEN = os.getenv("DISCORD_TOKEN")
 
-# bot = commands.Bot(command_prefix="Czerwony ", case_insensitive=False)
+bot = commands.Bot(command_prefix="Czerwony ", case_insensitive=False)
 
-# bot.load_extension("cogs.bot_utilities")
-# bot.load_extension("cogs.youtube")
-# bot.load_extension("cogs.vego_tracker")
-# # bot.load_extension("cogs.tasker")
-# bot.run(TOKEN)
-
-
-m = [23, 3, 41, 123, 3123]
-
-m.sort(reverse=True)
-
-print(m)
+bot.load_extension("cogs.bot_utilities")
+bot.load_extension("cogs.youtube")
+bot.load_extension("cogs.vego_tracker")
+# bot.load_extension("cogs.tasker")
+bot.run(TOKEN)

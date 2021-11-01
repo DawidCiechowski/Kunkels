@@ -178,7 +178,7 @@ Informacje ofensywne```
     @tasks.loop(minutes=5)
     async def _vego(self):
         embed, game_data = self.__generate_spectate_embed("vegø")
-        channel = discord.utils.get(self.bot.get_all_channels(), name="malaria")
+        channel = discord.utils.get(self.bot.get_all_channels(), name="vego-tracker")
         last_message = None
 
         last_message_id = channel.last_message_id

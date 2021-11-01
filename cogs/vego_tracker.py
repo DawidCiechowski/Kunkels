@@ -21,13 +21,17 @@ class Tracker(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
         self.api = RiotApi(RIOT_API_TOKEN)
+        self._vego.start()
 
     @staticmethod
     def _convert_unix_timestamp(timestamp: int) -> str:
         return datetime.utcfromtimestamp(timestamp).strftime("%H:%M %d-%m-%Y")
 
     def __generate_summoner_embed(self, summoner: str) -> discord.Embed:
-        summoner_data = self.api.summoner_search(summoner)
+        try:
+            summoner_data = self.api.summoner_search(summoner)
+        except Exception as err:
+            return
         match, _ = self.api.summoners_last_game(summoner)
         match_timestamp = self._convert_unix_timestamp(match.info.game_creation / 1000)
         game_mode = match.info.game_mode
@@ -167,21 +171,18 @@ Informacje ofensywne```
             game_data,
         )
 
-    @tasks.loop(seconds=2)
+    @tasks.loop(minutes=3)
     async def _vego(self):
         embed, game_data = self.__generate_spectate_embed("vegø")
         if not embed or not game_data:
-            print("Not playing")
-        else:
-            print("TEST")
-            channel = discord.utils.get(
-                self.bot.get_all_channels(), name="vego-tracker"
-            )
-            await channel.send(embed=embed)
+            return
+
+        channel = discord.utils.get(self.bot.get_all_channels(), name="vego-trackerr")
+        await channel.send(embed=embed)
 
     @_vego.before_loop
     async def await_vego(self):
-        self.bot.wait_until_ready()
+        await self.bot.wait_until_ready()
 
 
 def setup(bot: Bot):

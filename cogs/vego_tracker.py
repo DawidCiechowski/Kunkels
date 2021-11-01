@@ -171,13 +171,15 @@ Informacje ofensywne```
             game_data,
         )
 
-    @tasks.loop(minutes=3)
+    @tasks.loop(minutes=5)
     async def _vego(self):
         embed, game_data = self.__generate_spectate_embed("vegø")
         if not embed or not game_data:
             return
 
-        channel = discord.utils.get(self.bot.get_all_channels(), name="vego-trackerr")
+        summonr_embed = self.__generate_summoner_embed("vegø")
+        channel = discord.utils.get(self.bot.get_all_channels(), name="vego-tracker")
+        await channel.send(embed=summonr_embed)
         await channel.send(embed=embed)
 
     @_vego.before_loop

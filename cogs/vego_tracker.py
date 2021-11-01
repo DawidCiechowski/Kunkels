@@ -178,32 +178,34 @@ Informacje ofensywne```
     @tasks.loop(minutes=5)
     async def _vego(self):
         embed, game_data = self.__generate_spectate_embed("vegø")
-        channel = discord.utils.get(self.bot.get_all_channels(), name="vego-tracker")
-        last_message = None
+        channels = self.bot.get_all_channels()
+        channels = [channel for channel in channels if channel.name == "vego-tracker"]
+        for channel in channels:
+            last_message = None
 
-        last_message_id = channel.last_message_id
-        try:
-            last_message = (
-                await channel.fetch_message(channel.last_message_id)
-                if last_message_id
-                else None
+            last_message_id = channel.last_message_id
+            try:
+                last_message = (
+                    await channel.fetch_message(channel.last_message_id)
+                    if last_message_id
+                    else None
+                )
+            except discord.errors.NotFound as err:
+                pass
+
+            embed_title = (
+                last_message.embeds[0].title
+                if last_message and last_message.embeds
+                else discord.Embed()
             )
-        except discord.errors.NotFound as err:
-            pass
 
-        embed_title = (
-            last_message.embeds[0].title
-            if last_message and last_message.embeds
-            else discord.Embed()
-        )
+            if not embed or not game_data:
+                if embed_title == "__Tracker__" or not last_message:
+                    summonr_embed = self.__generate_summoner_embed("vegø")
+                    await channel.send(embed=summonr_embed)
+                continue
 
-        if not embed or not game_data:
-            if embed_title == "__Tracker__" or not last_message:
-                summonr_embed = self.__generate_summoner_embed("vegø")
-                await channel.send(embed=summonr_embed)
-            return
-
-        await channel.send(embed=embed)
+            await channel.send(embed=embed)
 
     @_vego.before_loop
     async def await_vego(self):

@@ -178,14 +178,19 @@ Informacje ofensywne```
     @tasks.loop(minutes=5)
     async def _vego(self):
         embed, game_data = self.__generate_spectate_embed("vegø")
-        channel = discord.utils.get(self.bot.get_all_channels(), name="vego-tracker")
+        channel = discord.utils.get(self.bot.get_all_channels(), name="malaria")
+        last_message = None
 
         last_message_id = channel.last_message_id
-        last_message = (
-            await channel.fetch_message(channel.last_message_id)
-            if last_message_id
-            else None
-        )
+        try:
+            last_message = (
+                await channel.fetch_message(channel.last_message_id)
+                if last_message_id
+                else None
+            )
+        except discord.errors.NotFound as err:
+            pass
+
         embed_title = (
             last_message.embeds[0].title
             if last_message and last_message.embeds

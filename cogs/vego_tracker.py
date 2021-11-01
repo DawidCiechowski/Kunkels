@@ -179,11 +179,21 @@ Informacje ofensywne```
     async def _vego(self):
         embed, game_data = self.__generate_spectate_embed("vegø")
         channel = discord.utils.get(self.bot.get_all_channels(), name="vego-tracker")
-        m = await channel.fetch_message(channel.last_message_id)
-        embed_title = m.embeds[0].title if m.embeds else discord.Embed()
+
+        last_message_id = channel.last_message_id
+        last_message = (
+            await channel.fetch_message(channel.last_message_id)
+            if last_message_id
+            else None
+        )
+        embed_title = (
+            last_message.embeds[0].title
+            if last_message and last_message.embeds
+            else discord.Embed()
+        )
 
         if not embed or not game_data:
-            if embed_title == "__Tracker__":
+            if embed_title == "__Tracker__" or not last_message:
                 summonr_embed = self.__generate_summoner_embed("vegø")
                 await channel.send(embed=summonr_embed)
             return

@@ -42,7 +42,7 @@ class BirthdayTracker(commands.Cog):
 
         for key, value in self.birthdays.items():
             if now.month == value.month and now.day == value.day:
-                await channel.send(embed=self.__generate_birthday_embed())
+                await channel.send(embed=self.__generate_birthday_embed(key, value))
 
     @_birthday_wisher.before_loop
     async def awaitBot(self):

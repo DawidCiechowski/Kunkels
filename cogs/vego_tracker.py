@@ -177,12 +177,16 @@ Informacje ofensywne```
 
     @tasks.loop(minutes=5)
     async def _vego(self):
+        """A task for sending information in regards to Vego games"""
         embed, game_data = self.__generate_spectate_embed("vegø")
-        channels = self.bot.get_all_channels()
-        channels = [channel for channel in channels if channel.name == "vego-tracker"]
+        channels = [
+            channel
+            for channel in self.bot.get_all_channels()
+            if channel.name == "vego-tracker"
+        ]
+
         for channel in channels:
             last_message = None
-
             last_message_id = channel.last_message_id
             try:
                 last_message = (
@@ -193,17 +197,18 @@ Informacje ofensywne```
             except discord.errors.NotFound as err:
                 pass
 
-            embed_title = (
+            last_message_embed_title = (
                 last_message.embeds[0].title
                 if last_message and last_message.embeds
                 else discord.Embed()
             )
 
             if not embed or not game_data:
-                if embed_title == "__Tracker__" or not last_message:
+                if last_message_embed_title == "__Tracker__" or not last_message:
                     summonr_embed = self.__generate_summoner_embed("vegø")
                     await channel.send(embed=summonr_embed)
-                continue
+                else:
+                    break
 
             await channel.send(embed=embed)
 

@@ -18,7 +18,7 @@ class BirthdayTracker(commands.Cog):
         birthdays = {
             "Pyrcio": dt(year=1996, month=10, day=13),
             "Anhelion": dt(year=1996, month=11, day=6),
-            "Kosa": dt(year=1996, month=5, day=15),
+            "Kosa": dt(year=1996, month=5, day=16),
             "Ciacho": dt(year=1996, month=10, day=28),
         }
 
@@ -29,7 +29,7 @@ class BirthdayTracker(commands.Cog):
         today = dt.now()
         title = f"Wszystkieg najlepeszego {name}!"
 
-        message = f"{name}!]\nWszystkiego najlepszego z okazji {today.year - date.year} urodzin! 🥳🥳🥳"
+        message = f"__{name}!__\nWszystkiego najlepszego z okazji {today.year - date.year} urodzin! 🥳🥳🥳"
 
         return discord.Embed(
             title=title, description=message, color=discord.Color.orange()

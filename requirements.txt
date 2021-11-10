@@ -5,3 +5,4 @@ async_timeout
 PyNaCl
 requests
 dataclasses_json
+beautifulsoup4

@@ -252,9 +252,9 @@ Informacje ofensywne```
                 if participant.puuid == summoner.puuid
             ]
 
-        plt.plot(games, kills.reverse(), "b--", label="Kills")
-        plt.plot(games, deaths.reverse(), "r--", label="Deaths")
-        plt.plot(games, assists.reverse(), "g:", label="Assists")
+        plt.plot(games, kills[::-1], "b--", label="Kills")
+        plt.plot(games, deaths[::-1], "r--", label="Deaths")
+        plt.plot(games, assists[::-1], "g:", label="Assists")
         plt.legend()
 
         figure = plt.gcf()

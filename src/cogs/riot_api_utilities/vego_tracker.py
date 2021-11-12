@@ -181,7 +181,7 @@ Informacje ofensywne```
     @tasks.loop(minutes=5)
     async def _vego(self):
         """A task for sending information in regards to Vego games"""
-        embed, game_data = self.__generate_spectate_embed("vegø")
+        embed, game_data = self.__generate_spectate_embed("végø")
         channels = [
             channel
             for channel in self.bot.get_all_channels()
@@ -278,6 +278,8 @@ Informacje ofensywne```
     )
     async def _kda(self, ctx, *summoner):
         summoner = " ".join(summoner)
+        if summoner == "vego":
+            summoner = "végø"
         embed = self.summoner_embed(summoner)
         await ctx.send(embed=embed, file=discord.File("test.png", filename="image.png"))
 

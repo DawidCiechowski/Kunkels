@@ -1,13 +1,14 @@
-import discord
-from discord.ext import commands
-import random
 import asyncio
 import itertools
+import random
 import sys
 import traceback
-from async_timeout import timeout
 from functools import partial
+
+import discord
 import youtube_dl
+from async_timeout import timeout
+from discord.ext import commands
 from youtube_dl import YoutubeDL
 
 # Suppress noise about console usage from errors

@@ -46,9 +46,6 @@ class Weather(commands.Cog):
 
     __slots__ = ["city"]
 
-    def __init__(self, bot: Bot):
-        self.bot = bot
-
     def __weather_api_call(self, city: str) -> Any:
         URL = "https://community-open-weather-map.p.rapidapi.com/weather"
         querystring = {"q": city, "units": "metric"}

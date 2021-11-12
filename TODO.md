@@ -9,7 +9,7 @@
 - [ ] Expand Rito apis into multiple games
 - [x] Finish Vego tracker - extension, use discord's task api for asynchronous monitoring of Vego's games, without impacting the rest of functionality
 - [x] Apply to RITO for perma app key, cause ATM API key has to be refreshed.
-- [ ] Improve discord.Embed formatting
+- [x] Improve discord.Embed formatting
 
 # Onoining/Longterm
 
@@ -20,6 +20,8 @@
 - Seperate Riot's API bot functionality and vego_tracker funcs. Rito's API functionality must be generic, and vego tracker is supposed to use it. They are seperate entities. Vego's tracker is just parameterized to get info about vego. 
 
 - Gotta add that error handling, RIP
+
+- Some sort of graphicial representation of data. People do not tend to read that much, hence, graphical representation might be more suitable. Probably gonna use matplotlib and pillow (will be open to other options)
 
 
 # General ideas I want to think about, but will forget, if they're not written down

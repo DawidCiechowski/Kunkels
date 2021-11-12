@@ -1,4 +1,4 @@
-from typing import Tuple, Union
+from typing import Tuple, Union, List
 
 import requests, code
 
@@ -38,53 +38,85 @@ class RiotApi:
 
         return Summoner.from_dict(requests.get(url, headers=self.headers).json())
 
-    def __get_last_match_id(self, summoners_puuid) -> str:
+    def __get_match_ids(self, summoners_puuid: str, count: int = 1) -> List[str]:
         """Get the ID of the last match a summonr has played
 
         Args:
         -----
             summoners_puuid (str): A PUUID of a summoner
 
+            count (int): A number of match ids to be returned. Defaults to 1.
+
         Returns:
         --------
             str: An ID of a last match played by a summoner
         """
-        url = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{summoners_puuid}/ids?start=0&count=1"
-        return requests.get(url, headers=self.headers).json()[0]
+        url = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/{summoners_puuid}/ids?start=0&count={count}"
+        return requests.get(url, headers=self.headers).json()
 
-    def __get_match_data(self, summoners_puuid: str) -> Match:
+    def __get_match_data(self, summoners_puuid: str, multiple: bool = False) -> Match:
         """Get the match data of a summoner with specified PUUID
 
         Args:
         -----
             summoners_puuid (str): A puuid of a summoner for which the matches is to be searched
 
+            multiple (bool): Whether to return more than one match. Defaults to False.
+
         Returns:
         --------
             Match: A dataclass containing the information in regards to the match
         """
-        match_id: str = self.__get_last_match_id(summoners_puuid)
-        url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}"
 
-        return Match.from_dict(requests.get(url, headers=self.headers).json())
+        if not multiple:
+            match_id: str = self.__get_match_ids(summoners_puuid)[0]
+            url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}"
+            return Match.from_dict(requests.get(url, headers=self.headers).json())
 
-    def __get_match_timeline(self, summoners_puuid: str) -> MatchTimeline:
+        match_ids: List[str] = self.__get_match_ids(summoners_puuid, count=10)
+        matches: List[Match] = []
+
+        for match_id in match_ids:
+            url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}"
+            matches.append(
+                Match.from_dict(requests.get(url, headers=self.headers).json())
+            )
+
+        return matches
+
+    def __get_match_timeline(
+        self, summoners_puuid: str, multiple: bool = False
+    ) -> MatchTimeline:
         """Get timeline of a given match
 
         Args:
         -----
             summoners_puuid (str): A puuid of a summoner for witch the match is to be searched
 
+            multiple (bool): Whether to return more than one timeline. Defaults to False.
+
         Returns:
         -------
             MatchTimeline: A dataclass containing a match timeline
         """
-        match_id: str = self.__get_last_match_id(summoners_puuid)
-        url = (
-            f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}/timeline"
-        )
 
-        return MatchTimeline.from_dict(requests.get(url, headers=self.headers).json())
+        if not multiple:
+            match_id: str = self.__get_match_ids(summoners_puuid)[0]
+            url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}/timeline"
+            return MatchTimeline.from_dict(
+                requests.get(url, headers=self.headers).json()
+            )
+
+        match_ids: List[str] = self.__get_match_ids(summoners_puuid, count=10)
+        timelines: List[MatchTimeline] = []
+
+        for match_id in match_ids:
+            url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}/timeline"
+            timelines.append(
+                MatchTimeline.from_dict(requests.get(url, headers=self.headers).json())
+            )
+
+        return timelines
 
     def summoners_last_game(self, summoners_name: str) -> Tuple[Match, MatchTimeline]:
         """Return all the information in regards to last match of a given player
@@ -102,6 +134,24 @@ class RiotApi:
         return self.__get_match_data(summoner.puuid), self.__get_match_timeline(
             summoner.puuid
         )
+
+    def get_summoner_games(
+        self, summoner_name: str
+    ) -> Tuple[List[Match], List[MatchTimeline]]:
+        """Return last 10 games that a summoner has played
+
+        Args:
+            summoner_name (str): A name of a summoner, for whom  the games are searched
+
+        Returns:
+            Tuple[List[Match], List[MatchTimeline]]: A tuple containing the games
+        """
+
+        summoner = self.summoner_search(summoner_name)
+
+        return self.__get_match_data(
+            summoner.puuid, multiple=True
+        ), self.__get_match_timeline(summoner.puuid, multiple=True)
 
     def __get_spectator_data(self, summoner_id: int) -> Union[SpectatorData, bool]:
         """Check if summoner is playing and either return False if not, or dataclass containing current match data

@@ -6,3 +6,5 @@ PyNaCl
 requests
 dataclasses_json
 beautifulsoup4
+matplotlib
+pillow

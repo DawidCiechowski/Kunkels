@@ -1,13 +1,16 @@
 from typing import Optional, Union, Tuple
+import io
 import os
 from datetime import datetime
 import time
 
+import matplotlib.pyplot as plt
 import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot
-from cogs.riot_api_utilities.api_dataclasses.spectator import SpectatorData
+from PIL import Image
 
+from cogs.riot_api_utilities.api_dataclasses.spectator import SpectatorData
 from cogs.riot_api_utilities.riot_api import RiotApi
 from cogs.riot_api_utilities.api_dataclasses.champion import champions_data
 
@@ -215,6 +218,66 @@ Informacje ofensywne```
     @_vego.before_loop
     async def await_vego(self):
         await self.bot.wait_until_ready()
+
+    def __figure_to_image(self, figure) -> Image:
+        """Private function, converting matplotlib figure into pillow Image
+
+        Args:
+            figure (matplotlib.pyplot.figure): Matplotlib figure
+
+        Returns:
+            Image: A figure converted into pillow Image
+        """
+
+        data_stream = io.BytesIO()
+        figure.savefig(data_stream)
+        data_stream.seek(0)
+        image = Image.open(data_stream)
+        return image
+
+    def summoner_embed(self, name) -> discord.Embed:
+        summoner = self.api.summoner_search(name)
+        matches, _ = self.api.get_summoner_games(name)
+        kills, deaths, assists = [], [], []
+        games = [x + 1 for x in range(10)]
+
+        for match in matches:
+            [
+                (
+                    kills.append(participant.kills),
+                    deaths.append(participant.deaths),
+                    assists.append(participant.assists),
+                )
+                for participant in match.info.participants
+                if participant.puuid == summoner.puuid
+            ]
+
+        plt.plot(games, kills, "b--", label="Kills")
+        plt.plot(games, deaths, "r--", label="Deaths")
+        plt.plot(games, assists, "g:", label="Assists")
+        plt.legend()
+
+        figure = plt.gcf()
+
+        pil_image = self.__figure_to_image(figure)
+        pil_image.save("test.png")
+        embed = discord.Embed(
+            title="KDA",
+            description=f"KDA dla {summoner.name}",
+            color=discord.Color.blue(),
+        )
+        embed.set_image(url="attachment://image.png")
+
+        return embed
+
+    @commands.command(
+        name="kda",
+        description="Command showcasing a graph with last 10 games of a summoner",
+    )
+    async def _kda(self, ctx, *summoner):
+        summoner = " ".join(summoner)
+        embed = self.summoner_embed(summoner)
+        await ctx.send(embed=embed, file=discord.File("test.png", filename="image.png"))
 
 
 def setup(bot: Bot):

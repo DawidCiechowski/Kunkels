@@ -268,6 +268,8 @@ Informacje ofensywne```
         )
         embed.set_image(url="attachment://image.png")
 
+        plt.clf()
+
         return embed
 
     @commands.command(

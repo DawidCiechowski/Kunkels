@@ -119,7 +119,7 @@ Informacje ofensywne```
         summoner_name = " ".join(summoner)
 
         if summoner_name == "vego":
-            summoner_name = "vegø"
+            summoner_name = "végø"
 
         embed = self.__generate_summoner_embed(summoner_name)
         await ctx.send(embed=embed)

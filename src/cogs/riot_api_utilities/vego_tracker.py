@@ -235,7 +235,7 @@ Informacje ofensywne```
         image = Image.open(data_stream)
         return image
 
-    def summoner_embed(self, name) -> discord.Embed:
+    def generate_kda_embed(self, name) -> discord.Embed:
         summoner = self.api.summoner_search(name)
         matches, _ = self.api.get_summoner_games(name)
         kills, deaths, assists = [], [], []
@@ -255,9 +255,9 @@ Informacje ofensywne```
             matches_dates.append(self._convert_unix_timestamp(match.info.game_creation))
 
         if kills and deaths and assists:
-            plt.plot(matches_dates, kills[::-1], "b--", label="Kills")
-            plt.plot(matches_dates, deaths[::-1], "r--", label="Deaths")
-            plt.plot(matches_dates, assists[::-1], "g:", label="Assists")
+            plt.plot(matches_dates[::-1], kills[::-1], "b--", label="Kills")
+            plt.plot(matches_dates[::-1], deaths[::-1], "r--", label="Deaths")
+            plt.plot(matches_dates[::-1], assists[::-1], "g:", label="Assists")
             plt.legend()
 
         figure = plt.gcf()
@@ -285,7 +285,7 @@ Informacje ofensywne```
         summoner = " ".join(summoner)
         if summoner == "vego":
             summoner = "végø"
-        embed = self.summoner_embed(summoner)
+        embed = self.generate_kda_embed(summoner)
         await ctx.send(embed=embed, file=discord.File("test.png", filename="image.png"))
 
 

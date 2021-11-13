@@ -296,6 +296,51 @@ Informacje ofensywne```
         embed = self.generate_kda_embed(summoner)
         await ctx.send(embed=embed, file=discord.File("test.png", filename="image.png"))
 
+    def generate_damage_chart_embed(self, name: str) -> discord.Embed:
+        summoner = self.api.summoner_search(name)
+        matches, _ = self.api.get_summoner_games(name)
+        matches_dates = []
+        damage_stats = []
+
+        for match in matches:
+            for participant in match.info.participants:
+
+                if summoner.puuid == participant.puuid:
+                    damage_stats.append(participant.total_damage_dealt_to_champions)
+
+            matches_dates.append(
+                self._convert_unix_timestamp(match.info.game_start_timestamp)
+            )
+
+        figure = plt.figure()
+        # Rotate x labels by 30 degrees
+        figure.autofmt_xdate(ha="right")
+        plt.bar(matches_dates[::-1], damage_stats[::-1], color="maroon", width=0.5)
+
+        pil_image = self.__figure_to_image(figure)
+        pil_image.save("test.png")
+        embed = discord.Embed(
+            title="Damage",
+            description=f"Damage zadany przez: {summoner.name}",
+            color=discord.Color.blue(),
+        )
+        embed.set_image(url="attachment://image.png")
+
+        plt.clf()
+
+        return embed
+
+    @commands.command(
+        name="damage", description="Show the damage done in last 10 games"
+    )
+    async def _damage(self, ctx, *summoner):
+        summoner = " ".join(summoner)
+        if summoner == "vego":
+            summoner = "végø"
+
+        embed = self.generate_damage_chart_embed(summoner)
+        await ctx.send(embed=embed, file=discord.File("test.png", filename="image.png"))
+
 
 def setup(bot: Bot):
     bot.add_cog(Tracker(bot))

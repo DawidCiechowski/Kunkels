@@ -180,7 +180,10 @@ Informacje ofensywne```
 
     @tasks.loop(minutes=5)
     async def _vego(self):
-        """A task for sending information in regards to Vego games"""
+        """A task for sending information in regards to Vego games
+        Option 1: No channel? NO message -> break out leave
+        Option 2: If there is a game,
+        """
         embed, game_data = self.__generate_spectate_embed("végø")
         channels = [
             channel
@@ -193,7 +196,7 @@ Informacje ofensywne```
             last_message_id = channel.last_message_id
             try:
                 last_message = (
-                    await channel.fetch_message(channel.last_message_id)
+                    await channel.fetch_message(last_message_id)
                     if last_message_id
                     else None
                 )
@@ -212,6 +215,11 @@ Informacje ofensywne```
                     await channel.send(embed=summonr_embed)
                 else:
                     break
+
+            # If the game is ongoing, but the signal already has been sent
+            # to the channel, don't send it again
+            if last_message_embed_title == "__Tracker__":
+                break
 
             await channel.send(embed=embed)
 

@@ -313,9 +313,10 @@ Informacje ofensywne```
             )
 
         figure = plt.figure()
+
+        plt.bar(matches_dates[::-1], damage_stats[::-1], color="maroon", width=0.5)
         # Rotate x labels by 30 degrees
         figure.autofmt_xdate(ha="right")
-        plt.bar(matches_dates[::-1], damage_stats[::-1], color="maroon", width=0.5)
 
         pil_image = self.__figure_to_image(figure)
         pil_image.save("test.png")
@@ -331,7 +332,9 @@ Informacje ofensywne```
         return embed
 
     @commands.command(
-        name="damage", description="Show the damage done in last 10 games"
+        name="damage",
+        description="Show the damage done in last 10 games",
+        aliases=["dmg"],
     )
     async def _damage(self, ctx, *summoner):
         summoner = " ".join(summoner)

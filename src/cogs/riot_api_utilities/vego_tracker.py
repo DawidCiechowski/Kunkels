@@ -28,7 +28,7 @@ class Tracker(commands.Cog):
 
     @staticmethod
     def _convert_unix_timestamp(timestamp: int) -> str:
-        return datetime.utcfromtimestamp(timestamp).strftime("%H:%M %d-%m-%Y")
+        return datetime.utcfromtimestamp(timestamp / 1000).strftime("%H:%M %d-%m-%y")
 
     def __generate_summoner_embed(self, summoner: str) -> discord.Embed:
         try:
@@ -36,7 +36,7 @@ class Tracker(commands.Cog):
         except Exception as err:
             return
         match, _ = self.api.summoners_last_game(summoner)
-        match_timestamp = self._convert_unix_timestamp(match.info.game_creation / 1000)
+        match_timestamp = self._convert_unix_timestamp(match.info.game_creation)
         game_mode = match.info.game_mode
         damage_chart = []
         damage_taken_chart = []
@@ -208,7 +208,7 @@ Informacje ofensywne```
 
             if not embed or not game_data:
                 if last_message_embed_title == "__Tracker__" or not last_message:
-                    summonr_embed = self.__generate_summoner_embed("vegø")
+                    summonr_embed = self.__generate_summoner_embed("végø")
                     await channel.send(embed=summonr_embed)
                 else:
                     break
@@ -239,7 +239,7 @@ Informacje ofensywne```
         summoner = self.api.summoner_search(name)
         matches, _ = self.api.get_summoner_games(name)
         kills, deaths, assists = [], [], []
-        games = [x + 1 for x in range(10)]
+        matches_dates = []
 
         for match in matches:
             [
@@ -252,12 +252,17 @@ Informacje ofensywne```
                 if participant.puuid == summoner.puuid
             ]
 
-        plt.plot(games, kills[::-1], "b--", label="Kills")
-        plt.plot(games, deaths[::-1], "r--", label="Deaths")
-        plt.plot(games, assists[::-1], "g:", label="Assists")
-        plt.legend()
+            matches_dates.append(self._convert_unix_timestamp(match.info.game_creation))
+
+        if kills and deaths and assists:
+            plt.plot(matches_dates, kills[::-1], "b--", label="Kills")
+            plt.plot(matches_dates, deaths[::-1], "r--", label="Deaths")
+            plt.plot(matches_dates, assists[::-1], "g:", label="Assists")
+            plt.legend()
 
         figure = plt.gcf()
+        # Rotate x labels by 30 degrees
+        figure.autofmt_xdate(ha="right")
 
         pil_image = self.__figure_to_image(figure)
         pil_image.save("test.png")

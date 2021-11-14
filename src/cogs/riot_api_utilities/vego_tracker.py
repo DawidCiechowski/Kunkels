@@ -368,11 +368,12 @@ Informacje ofensywne```
         plt.bar(matches_dates[::-1], defensive_stats[::-1], color="darkblue", width=0.5)
         # Rotate x labels by 30 degrees
         figure.autofmt_xdate(ha="right")
-
+        plt.ylabel("Damage przyjety")
+        plt.title(f"Damage przyjety przez: {summoner.name}")
         pil_image = self.__figure_to_image(figure)
         pil_image.save("test.png")
         embed = discord.Embed(
-            title="Damage",
+            title="Def",
             description=f"Damage przyjety przez: {summoner.name}",
             color=discord.Color.blue(),
         )

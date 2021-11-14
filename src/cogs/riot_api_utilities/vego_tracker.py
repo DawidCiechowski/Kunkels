@@ -365,7 +365,7 @@ Informacje ofensywne```
 
         figure = plt.figure()
 
-        plt.bar(matches_dates[::-1], defensive_stats[::-1], color="blue", width=0.5)
+        plt.bar(matches_dates[::-1], defensive_stats[::-1], color="darkblue", width=0.5)
         # Rotate x labels by 30 degrees
         figure.autofmt_xdate(ha="right")
 
@@ -373,7 +373,7 @@ Informacje ofensywne```
         pil_image.save("test.png")
         embed = discord.Embed(
             title="Damage",
-            description=f"Damage zadany przez: {summoner.name}",
+            description=f"Damage przyjety przez: {summoner.name}",
             color=discord.Color.blue(),
         )
         embed.set_image(url="attachment://image.png")

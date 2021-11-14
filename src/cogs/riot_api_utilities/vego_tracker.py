@@ -3,6 +3,7 @@ import io
 import os
 from datetime import datetime
 import time
+from dataclasses_json.cfg import T
 
 import matplotlib.pyplot as plt
 import discord
@@ -272,6 +273,9 @@ Informacje ofensywne```
         # Rotate x labels by 30 degrees
         figure.autofmt_xdate(ha="right")
 
+        plt.title(
+            f"KDA: Srednie = {sum(kills)/len(kills)}/{sum(deaths)/len(deaths)}/{sum(assists)/len(assists)}"
+        )
         pil_image = self.__figure_to_image(figure)
         pil_image.save("test.png")
         embed = discord.Embed(

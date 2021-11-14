@@ -318,6 +318,56 @@ class SpectateEmbedApi(ApiEmbed):
         )
 
 
+class KillParticipationEmbedApi(ApiEmbed):
+    def __init__(self, api: RiotApi, summoner: str):
+        self.api = api
+        self.summoner = summoner
+
+    def create_embed(self) -> discord.Embed:
+        summoner = self.api.summoner_search(self.summoner)
+        matches, _ = self.api.get_summoner_games(self.summoner)
+        matches_dates = []
+        kp = []
+
+        team_id = None
+        team_kills = None
+        summoner_ka = None
+
+        for match in matches:
+            for participant in match.info.participants:
+                if participant.puuid == summoner.puuid:
+                    team_id = participant.team_id
+                    summoner_ka = participant.kills + participant.assists
+
+            team_kills = [
+                team.objectives.champion.kills
+                for team in match.info.teams
+                if team.team_id == team_id
+            ][0]
+            kp.append(round(summoner_ka / team_kills * 100, 1))
+            matches_dates.append(self._convert_unix_timestamp(match.info.game_creation))
+
+        figure = plt.figure()
+
+        plt.bar(matches_dates[::-1], kp[::-1], color="darkslategray", width=0.5)
+        # Rotate x labels by 30 degrees
+        figure.autofmt_xdate(ha="right")
+        plt.ylabel("% Kill Participation")
+
+        pil_image = self._figure_to_image(figure)
+        pil_image.save("test.png")
+        embed = discord.Embed(
+            title="Kill Participation",
+            description=f"Kill participation %: {summoner.name}",
+            color=discord.Color.blue(),
+        )
+        embed.set_image(url="attachment://image.png")
+
+        plt.clf()
+
+        return embed
+
+
 class EmbedFactory:
     @staticmethod
     def factory_embed(type: str, api: RiotApi, summoner: str) -> ApiEmbed:
@@ -331,5 +381,7 @@ class EmbedFactory:
             return SummonerEmbedApi(api, summoner)
         elif type.lower() == "spectate":
             return SpectateEmbedApi(api, summoner)
+        elif type.lower() == "kp":
+            return KillParticipationEmbedApi(api, summoner)
         else:
             raise UnknownTypeException(f"{type} doesn't exists within factory")

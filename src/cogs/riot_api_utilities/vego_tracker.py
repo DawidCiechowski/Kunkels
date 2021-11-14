@@ -136,6 +136,22 @@ class Tracker(commands.Cog):
             file=discord.File("test.png", filename="image.png"),
         )
 
+    @commands.command(
+        name="kp",
+        description="Graph for kill participation stats",
+        aliases=["participation", "udzial"],
+    )
+    async def _kp(self, ctx, *summoner):
+        summoner = " ".join(summoner)
+        if summoner == "vego":
+            summoner = "végø"
+
+        embed_api = EmbedFactory.factory_embed("kp", self.api, summoner)
+        await ctx.send(
+            embed=embed_api.create_embed(),
+            file=discord.File("test.png", filename="image.png"),
+        )
+
 
 def setup(bot: Bot):
     bot.add_cog(Tracker(bot))

@@ -30,4 +30,4 @@
 
 - My guy, check how to write tests for discord bots, cause this thing needs some testing -> GitHub actions would be good direction, to see if I'm not breaking all the shit there is. 
 
-- Probably split this into some branches -> Pass all the tests before merging. (TBH, didn't expect I'd be doing anything with that for longer period of time, hence lackluster efforts)
+- Probably split this into some branches -> Pass all the tests before merging. (TBH, didn't expect I'd be doing anything with that for longer period of time, hence lackluster efforts

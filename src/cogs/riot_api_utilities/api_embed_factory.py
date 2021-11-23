@@ -296,8 +296,6 @@ class SpectateEmbedApi(ApiEmbed):
         game_mode = game_data.game_mode
         summoner_name = summoner_data.summoner_name
         champion_name = champ_data.name
-        game_minutes = int(game_data.game_length / 60)
-        game_seconds = game_data.game_length % 60
 
         title = "__Tracker__"
         description = f"""
@@ -307,7 +305,6 @@ class SpectateEmbedApi(ApiEmbed):
         **Nick:** {summoner_name}
         **Mode:** {game_mode}
         **Gra:** {champion_name}
-        **Czas gry:** {game_minutes}:{game_seconds}
         """
 
         return (

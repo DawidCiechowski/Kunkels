@@ -40,6 +40,7 @@ class BotUtils(commands.Cog):
         """Mute a member of a channel
 
         Args:
+        -----
             member (Optional[discord.Member], optional): A member to be muted. Defaults to None.
             time (Optional[int]), optional): For how long a user is to be muted
         """
@@ -57,6 +58,7 @@ class BotUtils(commands.Cog):
         """Clear messages from the text channel
 
         Args:
+        -----
             amount (int, optional): The amount of messages to remove. Defaults to 5.
         """
         await ctx.channel.purge(limit=int(amount) + 1)
@@ -73,6 +75,7 @@ class BotUtils(commands.Cog):
         """Ban a user from a channel
 
         Args:
+        -----
             member (Optional[discord.Member], optional): A member of discord channel. Defaults to None.
             reason (Optional[str], optional): A reason for banning the user. Defaults to "".
         """
@@ -98,6 +101,7 @@ class BotUtils(commands.Cog):
         """Kick a user from discord channel
 
         Args:
+        ----
             member (Optional[discord.Member], optional): A member of a Discord. Defaults to None.
             reason (Optional[str], optional): A reason for kicking the user. Defaults to "".
         """
@@ -122,6 +126,13 @@ class BotUtils(commands.Cog):
     @commands.command(name="unban", aliases=["odbanuj"])
     @commands.has_permissions(administrator=True)
     async def _unban(self, ctx, *, member: Optional[discord.Member] = None):
+        """Unban a banned member of a channel
+
+        Args:
+        -----
+            ctx (any): A context for a channel
+            member (Optional[discord.Member], optional): A member to unban. Defaults to None.
+        """
         if member is None:
             message = f"Czerwony **unban** *<Jakas menda>*\nOpcjonalne nazwy komendy: [**odbanuj**]"
             embed = discord.Embed(

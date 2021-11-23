@@ -62,7 +62,12 @@ class Weather(commands.Cog):
         description="Returns weather report for given city",
     )
     async def _weather(self, ctx, *city: str) -> discord.Embed:
+        """Send an embeded message with weather information for particular city
 
+        Args:
+            ctx ([type]): A context of a channel
+            city (str):  A name of a city to search information for
+        """
         if not city:
             title = "BLAD! XXXXXXXXX"
             message = "PODAJ KURWA MIASTO!\n\nFUNKCJI UZYWA SIE TAK\n\n```Czerwony weather London```"

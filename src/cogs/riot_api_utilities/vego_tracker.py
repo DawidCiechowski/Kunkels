@@ -43,6 +43,7 @@ class Tracker(commands.Cog):
     async def _vego(self):
         """A task for sending information in regards to Vego games
         Option 1: No channel? NO message -> break out leave
+        ---------
         Option 2: If there is a game,
         """
 
@@ -95,6 +96,13 @@ class Tracker(commands.Cog):
         description="Command showcasing a graph with last 10 games of a summoner",
     )
     async def _kda(self, ctx, *summoner):
+        """Send an embeded message with kda stats from last 10 games
+
+        Args:
+        -----
+            ctx : Context of a channel
+            summoner: A name of a summoner to search stats for
+        """
         summoner = " ".join(summoner)
         if summoner == "vego":
             summoner = "végø"
@@ -110,6 +118,13 @@ class Tracker(commands.Cog):
         aliases=["dmg"],
     )
     async def _damage(self, ctx, *summoner):
+        """Send an embeded message with damage stats from last 10 games
+
+        Args:
+        -----
+            ctx ([type]): A context of a channel
+            summoner (str):  A name of a summoner to search stats for
+        """
         summoner = " ".join(summoner)
         if summoner == "vego":
             summoner = "végø"
@@ -126,6 +141,13 @@ class Tracker(commands.Cog):
         aliases=["obrona", "defensywa", "defense"],
     )
     async def _def(self, ctx, *summoner):
+        """Send an embeded message with defensive stats from last 10 games
+
+        Args:
+        -----
+            ctx ([type]): A context of a channel
+            summoner (str):  A name of a summoner to search stats for
+        """
         summoner = " ".join(summoner)
         if summoner == "vego":
             summoner = "végø"
@@ -142,6 +164,13 @@ class Tracker(commands.Cog):
         aliases=["participation", "udzial"],
     )
     async def _kp(self, ctx, *summoner):
+        """Send an embeded message with kill participation stats from last 10 games
+
+        Args:
+        -----
+            ctx ([type]): A context of a channel
+            summoner (str):  A name of a summoner to search stats for
+        """
         summoner = " ".join(summoner)
         if summoner == "vego":
             summoner = "végø"

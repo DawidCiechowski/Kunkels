@@ -1,6 +1,7 @@
 from typing import Tuple, Union, List
+from threading import Thread
 
-import requests, code
+import requests
 
 from cogs.riot_api_utilities.api_dataclasses.spectator import SpectatorData
 
@@ -67,10 +68,13 @@ class RiotApi:
         --------
             Match: A dataclass containing the information in regards to the match
         """
-
+        local_threads = []
         if not multiple:
             match_id: str = self.__get_match_ids(summoners_puuid)[0]
             url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}"
+            return Match.from_dict(requests.get(url, headers=self.headers).json())
+
+        def get_match(url):
             return Match.from_dict(requests.get(url, headers=self.headers).json())
 
         match_ids: List[str] = self.__get_match_ids(summoners_puuid, count=10)
@@ -78,9 +82,16 @@ class RiotApi:
 
         for match_id in match_ids:
             url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}"
-            matches.append(
-                Match.from_dict(requests.get(url, headers=self.headers).json())
+            thread = Thread(
+                target=lambda matches, url: matches.append(get_match(url)),
+                args=(matches, url),
+                daemon=True,
             )
+            thread.start()
+            local_threads.append(thread)
+
+        for thread in local_threads:
+            thread.join()
 
         return matches
 
@@ -149,9 +160,10 @@ class RiotApi:
 
         summoner = self.summoner_search(summoner_name)
 
-        return self.__get_match_data(
-            summoner.puuid, multiple=True
-        ), self.__get_match_timeline(summoner.puuid, multiple=True)
+        return (
+            self.__get_match_data(summoner.puuid, multiple=True),
+            1,
+        )  # self.__get_match_timeline(summoner.puuid, multiple=True)
 
     def __get_spectator_data(self, summoner_id: int) -> Union[SpectatorData, bool]:
         """Check if summoner is playing and either return False if not, or dataclass containing current match data

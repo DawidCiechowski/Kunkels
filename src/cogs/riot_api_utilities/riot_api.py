@@ -1,5 +1,5 @@
 from typing import Tuple, Union, List
-from threading import Thread
+from threading import Thread, Lock
 
 import requests
 
@@ -23,6 +23,7 @@ class RiotApi:
             "Origin": "https://developer.riotgames.com",
             "X-Riot-Token": f"{self.api_token}",
         }
+        self.lock = Lock()
 
     def summoner_search(self, summoners_name: str) -> Summoner:
         """Generate a dataclass with all the information on a user
@@ -74,8 +75,12 @@ class RiotApi:
             url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}"
             return Match.from_dict(requests.get(url, headers=self.headers).json())
 
-        def get_match(url):
-            return Match.from_dict(requests.get(url, headers=self.headers).json())
+        def get_match(matches, url):
+            self.lock.acquire()
+            matches.append(
+                Match.from_dict(requests.get(url, headers=self.headers).json())
+            )
+            self.lock.release()
 
         match_ids: List[str] = self.__get_match_ids(summoners_puuid, count=10)
         matches: List[Match] = []
@@ -83,7 +88,7 @@ class RiotApi:
         for match_id in match_ids:
             url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}"
             thread = Thread(
-                target=lambda matches, url: matches.append(get_match(url)),
+                target=get_match,
                 args=(matches, url),
                 daemon=True,
             )

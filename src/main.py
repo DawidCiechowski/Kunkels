@@ -7,9 +7,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN = os.getenv("DISCORD_TOKEN")
-DEBUG = os.getenv("DEBUG")
-
-bot = commands.Bot(command_prefix="Czerwony ", case_insensitive=False)
+DEBUG = os.getenv("DEBUG", "False") == "True"
+if not DEBUG:
+    bot = commands.Bot(command_prefix="Czerwony ", case_insensitive=False)
+else:
+    bot = commands.Bot(command_prefix="Bialy ", case_insensitive=False)
 
 bot.load_extension("cogs.utils.weather")
 bot.load_extension("cogs.steam.steam")

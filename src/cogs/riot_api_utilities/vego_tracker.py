@@ -6,8 +6,7 @@ from discord.ext.commands import Bot
 
 from cogs.riot_api_utilities.api_embed_factory import EmbedFactory
 from cogs.riot_api_utilities.riot_api import RiotApi
-
-RIOT_API_TOKEN = os.getenv("RIOT_API_TOKEN")
+from cogs.riot_api_utilities.constants import RIOT_API_TOKEN, TEAM
 
 
 class Tracker(commands.Cog):
@@ -17,6 +16,12 @@ class Tracker(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
         self.api = RiotApi(RIOT_API_TOKEN)
+        self.currently_playing = {member: False for member in TEAM}
+        self.channels = [
+            channel
+            for channel in self.bot.get_all_channels()
+            if channel.name == "vego-tracker"
+        ]
         self._vego.start()
 
     @commands.command(
@@ -39,55 +44,40 @@ class Tracker(commands.Cog):
         embed_api = EmbedFactory.factory_embed("summoner", self.api, summoner_name)
         await ctx.send(embed=embed_api.create_embed())
 
-    @tasks.loop(minutes=5)
-    async def _vego(self):
-        """A task for sending information in regards to Vego games
-        Option 1: No channel? NO message -> break out leave
-        ---------
-        Option 2: If there is a game,
-        """
-
-        embed_api = EmbedFactory.factory_embed("spectate", self.api, "végø")
-        embed, game_data = embed_api.create_embed()
-        channels = [
-            channel
-            for channel in self.bot.get_all_channels()
-            if channel.name == "vego-tracker"
-        ]
-
-        for channel in channels:
-            last_message = None
-            last_message_id = channel.last_message_id
-            try:
-                last_message = (
-                    await channel.fetch_message(last_message_id)
-                    if last_message_id
-                    else None
-                )
-            except discord.errors.NotFound as err:
-                pass
-
-            last_message_embed_title = (
-                last_message.embeds[0].title
-                if last_message and last_message.embeds
-                else discord.Embed()
-            )
-
-            if not embed or not game_data:
-                if last_message_embed_title == "__Tracker__" or not last_message:
-                    embed_api = EmbedFactory.factory_embed("summoner", self.api, "végø")
-                    await channel.send(embed=embed_api.create_embed())
-                else:
-                    break
-
-            # If the game is ongoing, but the signal already has been sent
-            # to the channel, don't send it again
-            if last_message_embed_title == "__Tracker__":
-                break
-
+    async def send_embed_to_all_channels(self, embed: discord.Embed):
+        for channel in self.channels:
             await channel.send(embed=embed)
 
-    @_vego.before_loop
+    @tasks.loop(minutes=10)
+    async def _team(self):
+        """If any of team members are in game ->"""
+        for member in TEAM:
+            spectator_data = self.api.summoners_current_game(member)
+
+            # * No spectator data, but player game_id present
+            if not spectator_data:
+                if not self.currently_playing[member]:
+                    continue
+
+                embed = EmbedFactory.factory_embed("summoner", self.api, member)
+                await self.send_embed_to_all_channels(embed)
+                self.currently_playing[member] = False
+
+            # * Spectator data present, but no member game_id present
+            if not self.currently_playing[member]:
+                self.currently_playing[member] = spectator_data.game_id
+            else:
+                # * Spectator data and player's game_id present
+                if self.currently_playing[member] == spectator_data.game_id:
+                    continue
+
+                embed = EmbedFactory.factory_embed("summoner", self.api, member)
+                await self.send_embed_to_all_channels(embed)
+                self.currently_playing[member] = spectator_data.game_id
+
+        # await channel.send(embed=embed)
+
+    @_team.before_loop
     async def await_vego(self):
         await self.bot.wait_until_ready()
 

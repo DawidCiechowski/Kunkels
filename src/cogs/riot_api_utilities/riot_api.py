@@ -25,20 +25,7 @@ class RiotApi:
         }
         self.lock = Lock()
 
-    def summoner_search(self, summoners_name: str) -> Summoner:
-        """Generate a dataclass with all the information on a user
-
-        Args:
-        -----
-            summoners_name (str): Summoner name of a user
-
-        Returns:
-        --------
-            Summoner: A dataclass containing all the information on the user
-        """
-        url = f"https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{summoners_name}"
-
-        return Summoner.from_dict(requests.get(url, headers=self.headers).json())
+    # -------------------------------------------PRIVATE-----------------------------------------------
 
     def __get_match_ids(self, summoners_puuid: str, count: int = 1) -> List[str]:
         """Get the ID of the last match a summonr has played
@@ -134,6 +121,42 @@ class RiotApi:
 
         return timelines
 
+    def __get_spectator_data(self, summoner_id: int) -> Union[SpectatorData, bool]:
+        """Check if summoner is playing and either return False if not, or dataclass containing current match data
+
+        Args:
+        -----
+            summoner_id (int): An encrypted id of a user
+
+        Returns:
+        --------
+            Union[SpectatorData, bool]: Either dataclass containing match data or False if summoner not playing
+        """
+        url = f"https://eun1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/{summoner_id}"
+        response = requests.get(url, headers=self.headers)
+
+        if response.status_code == 404:
+            return False
+
+        return SpectatorData.from_dict(response.json())
+
+    # -------------------------------------------PUBLIC---------------------------------------------------
+
+    def summoner_search(self, summoners_name: str) -> Summoner:
+        """Generate a dataclass with all the information on a user
+
+        Args:
+        -----
+            summoners_name (str): Summoner name of a user
+
+        Returns:
+        --------
+            Summoner: A dataclass containing all the information on the user
+        """
+        url = f"https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{summoners_name}"
+
+        return Summoner.from_dict(requests.get(url, headers=self.headers).json())
+
     def summoners_last_game(self, summoners_name: str) -> Tuple[Match, MatchTimeline]:
         """Return all the information in regards to last match of a given player
 
@@ -169,25 +192,6 @@ class RiotApi:
             self.__get_match_data(summoner.puuid, multiple=True),
             1,
         )  # self.__get_match_timeline(summoner.puuid, multiple=True)
-
-    def __get_spectator_data(self, summoner_id: int) -> Union[SpectatorData, bool]:
-        """Check if summoner is playing and either return False if not, or dataclass containing current match data
-
-        Args:
-        -----
-            summoner_id (int): An encrypted id of a user
-
-        Returns:
-        --------
-            Union[SpectatorData, bool]: Either dataclass containing match data or False if summoner not playing
-        """
-        url = f"https://eun1.api.riotgames.com/lol/spectator/v4/active-games/by-summoner/{summoner_id}"
-        response = requests.get(url, headers=self.headers)
-
-        if response.status_code == 404:
-            return False
-
-        return SpectatorData.from_dict(response.json())
 
     def summoners_current_game(self, summoners_name: str) -> Union[SpectatorData, bool]:
         """Current game data, if available

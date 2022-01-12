@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot
 
-from cogs.riot_api_utilities.api_embed_factory import EmbedFactory
+from cogs.riot_api_utilities.api_embed_factory import EmbedFactory, EmbedType
 from cogs.riot_api_utilities.riot_api import RiotApi
 from cogs.riot_api_utilities.constants import RIOT_API_TOKEN, TEAM
 
@@ -36,7 +36,9 @@ class Tracker(commands.Cog):
         if summoner_name == "vego":
             summoner_name = "végø"
 
-        embed_api = EmbedFactory.factory_embed("summoner", self.api, summoner_name)
+        embed_api = EmbedFactory.factory_embed(
+            EmbedType.SUMMONER, self.api, summoner_name
+        )
         await ctx.send(embed=embed_api.create_embed())
 
     async def send_embed_to_all_channels(self, embed: discord.Embed):
@@ -53,7 +55,7 @@ class Tracker(commands.Cog):
             if not spectator_data:
                 if not self.currently_playing[member]:
                     continue
-                embed = EmbedFactory.factory_embed("summoner", self.api, member)
+                embed = EmbedFactory.factory_embed(EmbedType.SUMMONER, self.api, member)
                 await self.send_embed_to_all_channels(embed.create_embed())
                 self.currently_playing[member] = ""
                 continue
@@ -65,7 +67,7 @@ class Tracker(commands.Cog):
                 # * Spectator data and player's game_id present
                 if self.currently_playing[member] == spectator_data.game_id:
                     continue
-                embed = EmbedFactory.factory_embed("summoner", self.api, member)
+                embed = EmbedFactory.factory_embed(EmbedType.SUMMONER, self.api, member)
                 await self.send_embed_to_all_channels(embed.create_embed())
                 self.currently_playing[member] = spectator_data.game_id
 
@@ -93,7 +95,7 @@ class Tracker(commands.Cog):
         summoner = " ".join(summoner)
         if summoner == "vego":
             summoner = "végø"
-        embed_api = EmbedFactory.factory_embed("kda", self.api, summoner)
+        embed_api = EmbedFactory.factory_embed(EmbedType.KDA, self.api, summoner)
         await ctx.send(
             embed=embed_api.create_embed(),
             file=discord.File("test.png", filename="image.png"),
@@ -116,7 +118,7 @@ class Tracker(commands.Cog):
         if summoner == "vego":
             summoner = "végø"
 
-        embed_api = EmbedFactory.factory_embed("damage", self.api, summoner)
+        embed_api = EmbedFactory.factory_embed(EmbedType.DAMAGE, self.api, summoner)
         await ctx.send(
             embed=embed_api.create_embed(),
             file=discord.File("test.png", filename="image.png"),
@@ -139,7 +141,7 @@ class Tracker(commands.Cog):
         if summoner == "vego":
             summoner = "végø"
 
-        embed_api = EmbedFactory.factory_embed("defense", self.api, summoner)
+        embed_api = EmbedFactory.factory_embed(EmbedType.DEFENSE, self.api, summoner)
         await ctx.send(
             embed=embed_api.create_embed(),
             file=discord.File("test.png", filename="image.png"),
@@ -162,7 +164,9 @@ class Tracker(commands.Cog):
         if summoner == "vego":
             summoner = "végø"
 
-        embed_api = EmbedFactory.factory_embed("kp", self.api, summoner)
+        embed_api = EmbedFactory.factory_embed(
+            EmbedType.KILL_PARTICIPATION, self.api, summoner
+        )
         await ctx.send(
             embed=embed_api.create_embed(),
             file=discord.File("test.png", filename="image.png"),

@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import io
 from datetime import datetime
+from enum import Enum
 
 import discord
 from discord.embeds import Embed
@@ -13,6 +14,15 @@ from cogs.riot_api_utilities.api_dataclasses.champion import champions_data
 
 class UnknownTypeException(Exception):
     """Raised when factory is given an unknown type"""
+
+
+class EmbedType(Enum):
+    DAMAGE = "damage"
+    KDA = "kda"
+    DEFENSE = "defense"
+    SUMMONER = "summoner"
+    KILL_PARTICIPATION = "kp"
+    SPECTATE = "spectate"
 
 
 class ApiEmbed(ABC):
@@ -367,18 +377,18 @@ class KillParticipationEmbedApi(ApiEmbed):
 
 class EmbedFactory:
     @staticmethod
-    def factory_embed(type: str, api: RiotApi, summoner: str) -> ApiEmbed:
-        if type.lower() == "damage":
+    def factory_embed(embed_type: EmbedType, api: RiotApi, summoner: str) -> ApiEmbed:
+        if embed_type == EmbedType.DAMAGE:
             return DamageEmbedApi(api, summoner)
-        elif type.lower() == "defense":
+        elif embed_type == EmbedType.DEFENSE:
             return DefenseEmbedApi(api, summoner)
-        elif type.lower() == "kda":
+        elif embed_type == EmbedType.KDA:
             return KdaEmbedApi(api, summoner)
-        elif type.lower() == "summoner":
+        elif embed_type == EmbedType.SUMMONER:
             return SummonerEmbedApi(api, summoner)
-        elif type.lower() == "spectate":
+        elif embed_type == EmbedType.SUMMONER:
             return SpectateEmbedApi(api, summoner)
-        elif type.lower() == "kp":
+        elif embed_type == EmbedType.KILL_PARTICIPATION:
             return KillParticipationEmbedApi(api, summoner)
         else:
             raise UnknownTypeException(f"{type} doesn't exists within factory")

@@ -60,7 +60,8 @@ class RiotApi:
         if not multiple:
             match_id: str = self.__get_match_ids(summoners_puuid)[0]
             url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match_id}"
-            return Match.from_dict(requests.get(url, headers=self.headers).json())
+            match = requests.get(url, headers=self.headers).json()
+            return Match.from_dict(match)
 
         def get_match(matches, url):
             self.lock.acquire()
@@ -154,8 +155,8 @@ class RiotApi:
             Summoner: A dataclass containing all the information on the user
         """
         url = f"https://eun1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{summoners_name}"
-
-        return Summoner.from_dict(requests.get(url, headers=self.headers).json())
+        summoner = requests.get(url, headers=self.headers).json()
+        return Summoner.from_dict(summoner)
 
     def summoners_last_game(self, summoners_name: str) -> Tuple[Match, MatchTimeline]:
         """Return all the information in regards to last match of a given player
@@ -209,3 +210,4 @@ class RiotApi:
             return False
 
         return spectator_data
+

@@ -15,7 +15,6 @@ class Tasker(commands.Cog):
 
     @tasks.loop(seconds=7.0)
     async def printer(self):
-        print(self.index)
         self.index += 1
 
 

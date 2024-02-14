@@ -2,13 +2,12 @@ from typing import Dict, Any
 import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot
-
 from cogs.riot_api_utilities.api_embed_factory import EmbedFactory, EmbedType
 from cogs.riot_api_utilities.riot_api import RiotApi
 from cogs.riot_api_utilities.constants import RIOT_API_TOKEN, TEAM
 
 
-class Tracker(commands.Cog):
+class Tracker(commands.Cog, name='Tracker'):
 
     __slots__ = "bot"
 
@@ -16,7 +15,7 @@ class Tracker(commands.Cog):
         self.bot = bot
         self.api = RiotApi(RIOT_API_TOKEN)
         self.currently_playing: Dict[str, Any] = {member: "" for member in TEAM}
-        self._team.start()
+        # self._team.start()
         self.channels = []
 
     @commands.command(
@@ -39,7 +38,8 @@ class Tracker(commands.Cog):
         embed_api = EmbedFactory.factory_embed(
             EmbedType.SUMMONER, self.api, summoner_name
         )
-        await ctx.send(embed=embed_api.create_embed())
+        embed = embed_api.create_embed()
+        await ctx.send(embed=embed)
 
     async def send_embed_to_all_channels(self, embed: discord.Embed):
         for channel in self.channels:
@@ -173,5 +173,5 @@ class Tracker(commands.Cog):
         )
 
 
-def setup(bot: Bot):
-    bot.add_cog(Tracker(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(Tracker(bot))

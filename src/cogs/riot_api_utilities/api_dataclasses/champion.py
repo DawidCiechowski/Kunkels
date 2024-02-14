@@ -1,5 +1,5 @@
 from os import name
-from typing import List
+from typing import Dict, List 
 
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json, config
@@ -73,13 +73,13 @@ class ChampionData:
     type: str
     data_format: str = field(metadata=config(field_name="format"))
     version: str
-    data: List[Champion]
+    data: Dict[str, Champion]
 
 
 from pathlib import Path
 import json
 
-with open(f"{Path(__file__).parent}/champion_data.json") as f:
+with open(f"{Path(__file__).parent}/champion_data.json", encoding='utf8') as f:
     champions = json.load(f)
 
 champions_data = ChampionData.from_dict(champions)

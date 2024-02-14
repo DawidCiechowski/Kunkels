@@ -197,7 +197,7 @@ class SummonerEmbedApi(ApiEmbed):
         try:
             summoner_data = self.api.summoner_search(self.summoner)
         except Exception as err:
-            return
+            return "LOL"
         match, _ = self.api.summoners_last_game(self.summoner)
         match_timestamp = self._convert_unix_timestamp(match.info.game_creation)
         game_mode = match.info.game_mode
@@ -265,9 +265,13 @@ Informacje ofensywne```
                             **Polozone wardy**: {wards_placed}
                             """
 
-        return discord.Embed(
-            title=embed_title, description=embed_message, color=discord.Color.blue()
+        embed =  discord.Embed(
+            title=embed_title, description=embed_message, color=discord.Color.blue(), url=''
         )
+
+        splash_url = f"https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{champion}_1.jpg"
+        embed.set_image(url=splash_url)
+        return embed
 
 
 class SpectateEmbedApi(ApiEmbed):
@@ -380,15 +384,15 @@ class EmbedFactory:
     def factory_embed(embed_type: EmbedType, api: RiotApi, summoner: str) -> ApiEmbed:
         if embed_type == EmbedType.DAMAGE:
             return DamageEmbedApi(api, summoner)
-        elif embed_type == EmbedType.DEFENSE:
+        if embed_type == EmbedType.DEFENSE:
             return DefenseEmbedApi(api, summoner)
-        elif embed_type == EmbedType.KDA:
+        if embed_type == EmbedType.KDA:
             return KdaEmbedApi(api, summoner)
-        elif embed_type == EmbedType.SUMMONER:
+        if embed_type == EmbedType.SUMMONER:
             return SummonerEmbedApi(api, summoner)
-        elif embed_type == EmbedType.SUMMONER:
+        if embed_type == EmbedType.SUMMONER:
             return SpectateEmbedApi(api, summoner)
-        elif embed_type == EmbedType.KILL_PARTICIPATION:
+        if embed_type == EmbedType.KILL_PARTICIPATION:
             return KillParticipationEmbedApi(api, summoner)
-        else:
-            raise UnknownTypeException(f"{type} doesn't exists within factory")
+        
+        raise UnknownTypeException(f"{type} doesn't exists within factory")

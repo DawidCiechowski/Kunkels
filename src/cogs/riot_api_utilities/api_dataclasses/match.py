@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Any, Optional
 
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json, LetterCase
@@ -46,29 +46,38 @@ class Perk:
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass()
 class Participant:
+    all_in_pings: int
+    assist_me_pings: int
     assists: int
     baron_kills: int
+    basic_pings: int
     bounty_level: int
     champ_experience: int
     champ_level: int
     champion_id: int
     champion_name: str
     champion_transform: int
+    command_pings: int
     consumables_purchased: int
     damage_dealt_to_buildings: int
     damage_dealt_to_objectives: int
     damage_dealt_to_turrets: int
     damage_self_mitigated: int
+    danger_pings: int
     deaths: int
     detector_wards_placed: int
     double_kills: int
     dragon_kills: int
+    eligible_for_progression: bool
+    enemy_missing_pings: int
+    enemy_vision_pings: int
     first_blood_assist: bool
     first_blood_kill: bool
     first_tower_assist: bool
     first_tower_kill: bool
     game_ended_in_early_surrender: bool
     game_ended_in_surrender: bool
+    get_back_pings: int
     gold_earned: int
     gold_spent: int
     individual_position: str
@@ -93,22 +102,42 @@ class Participant:
     magic_damage_dealt: int
     magic_damage_dealt_to_champions: int
     magic_damage_taken: int
+    missions: Dict[str, Any]
+    need_vision_pings: int
     neutral_minions_killed: int
     nexus_kills: int
     nexus_lost: int
     nexus_takedowns: int
     objectives_stolen: int
     objectives_stolen_assists: int
+    on_my_way_pings: int
     participant_id: int
     penta_kills: int
     perks: Perk
     physical_damage_dealt: int
     physical_damage_dealt_to_champions: int
     physical_damage_taken: int
+    placement: int
+    player_augment1: int
+    player_augment2: int
+    player_augment3: int
+    player_augment4: int
+    player_score1: int
+    player_score2: int
+    player_score3: int
+    player_score4: int
+    player_score5: int
+    player_score6: int
+    player_score7: int
+    player_score8: int
+    player_score9: int
+    player_score10: int
+    player_subteam_id: int
     profile_icon: int
+    push_pings: int
     puuid: str
     quadra_kills: int
-    riot_id_name: str
+    riot_id_game_name: str
     riot_id_tagline: str
     role: str
     sight_wards_bought_in_game: int
@@ -116,6 +145,7 @@ class Participant:
     spell2_casts: int
     spell3_casts: int
     spell4_casts: int
+    subteam_placement: int
     summoner1_casts: int
     summoner1_id: int
     summoner2_casts: int
@@ -125,7 +155,7 @@ class Participant:
     summoner_name: str
     team_early_surrendered: bool
     team_id: int
-    team_position: int
+    team_position: str
     time_c_cing_others: int
     time_played: int
     total_damage_dealt: int
@@ -146,6 +176,7 @@ class Participant:
     turret_takedowns: int
     turrets_lost: int
     unreal_kills: int
+    vision_cleared_pings: int
     vision_score: int
     vision_wards_bought_in_game: int
     wards_killed: int
@@ -190,6 +221,7 @@ class Team:
 @dataclass_json(letter_case=LetterCase.CAMEL)
 @dataclass()
 class Info:
+    end_of_game_result: str
     game_creation: int
     game_duration: int
     game_end_timestamp: int

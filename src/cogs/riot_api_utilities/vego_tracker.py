@@ -15,7 +15,7 @@ class Tracker(commands.Cog, name='Tracker'):
         self.bot = bot
         self.api = RiotApi(RIOT_API_TOKEN)
         self.currently_playing: Dict[str, Any] = {member: "" for member in TEAM}
-        # self._team.start()
+        self._team.start()
         self.channels = []
 
     @commands.command(
@@ -45,31 +45,23 @@ class Tracker(commands.Cog, name='Tracker'):
         for channel in self.channels:
             await channel.send(embed=embed)
 
-    @tasks.loop(minutes=5)
+    @tasks.loop(minutes=1)
     async def _team(self):
         """If any of team members are in game ->"""
         for member in TEAM:
             spectator_data = self.api.summoners_current_game(member)
 
-            # * No spectator data, but player game_id present
-            if not spectator_data:
-                if not self.currently_playing[member]:
-                    continue
-                embed = EmbedFactory.factory_embed(EmbedType.SUMMONER, self.api, member)
+            if spectator_data and spectator_data.game_id != self.currently_playing[member]:
+                embed = EmbedFactory.factory_embed(EmbedType.SPECTATE, self.api, member)
                 await self.send_embed_to_all_channels(embed.create_embed())
+                self.currently_playing[member] = spectator_data.game_id
+                continue
+
+            if not spectator_data and self.currently_playing[member]:
+                self.send_embed_to_all_channels(embed.create_embed())
                 self.currently_playing[member] = ""
                 continue
 
-            # * Spectator data present, but no member game_id present
-            if not self.currently_playing[member]:
-                self.currently_playing[member] = spectator_data.game_id
-            else:
-                # * Spectator data and player's game_id present
-                if self.currently_playing[member] == spectator_data.game_id:
-                    continue
-                embed = EmbedFactory.factory_embed(EmbedType.SUMMONER, self.api, member)
-                await self.send_embed_to_all_channels(embed.create_embed())
-                self.currently_playing[member] = spectator_data.game_id
 
     @_team.before_loop
     async def await_vego(self):

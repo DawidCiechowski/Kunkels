@@ -18,5 +18,5 @@ class Tasker(commands.Cog):
         self.index += 1
 
 
-def setup(bot):
-    bot.add_cog(Tasker(bot))
+async def setup(bot):
+    await bot.add_cog(Tasker(bot))

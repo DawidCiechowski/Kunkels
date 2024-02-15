@@ -390,7 +390,7 @@ class EmbedFactory:
             return KdaEmbedApi(api, summoner)
         if embed_type == EmbedType.SUMMONER:
             return SummonerEmbedApi(api, summoner)
-        if embed_type == EmbedType.SUMMONER:
+        if embed_type == EmbedType.SPECTATE:
             return SpectateEmbedApi(api, summoner)
         if embed_type == EmbedType.KILL_PARTICIPATION:
             return KillParticipationEmbedApi(api, summoner)

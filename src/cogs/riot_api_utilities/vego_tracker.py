@@ -60,7 +60,7 @@ class Tracker(commands.Cog, name='Tracker'):
 
             if not spectator_data and self.currently_playing[member]:
                 embed = EmbedFactory.factory_embed(EmbedType.SUMMONER, self.api, member)
-                self.send_embed_to_all_channels(embed.create_embed())
+                await self.send_embed_to_all_channels(embed.create_embed())
                 self.currently_playing[member] = ""
                 continue
 

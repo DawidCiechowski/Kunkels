@@ -42,6 +42,7 @@ class Tracker(commands.Cog, name='Tracker'):
         await ctx.send(embed=embed)
 
     async def send_embed_to_all_channels(self, embed: discord.Embed):
+
         for channel in self.channels:
             await channel.send(embed=embed)
 
@@ -49,13 +50,11 @@ class Tracker(commands.Cog, name='Tracker'):
     async def _team(self):
         """If any of team members are in game ->"""
         for member in TEAM:
-            # print(self.currently_playing[member])
             spectator_data = self.api.summoners_current_game(member)
-
             if spectator_data and spectator_data.game_id != self.currently_playing[member]:
                 embed = EmbedFactory.factory_embed(EmbedType.SPECTATE, self.api, member).create_embed()
-                if embed:
-                    await self.send_embed_to_all_channels()
+                if embed != None:
+                    await self.send_embed_to_all_channels(embed)
                     self.currently_playing[member] = spectator_data.game_id
                     continue
 
@@ -69,6 +68,7 @@ class Tracker(commands.Cog, name='Tracker'):
     @_team.before_loop
     async def await_vego(self):
         await self.bot.wait_until_ready()
+
         self.channels = [
             channel
             for channel in self.bot.get_all_channels()

@@ -292,7 +292,6 @@ class SpectateEmbedApi(ApiEmbed):
             discord.Embed: An embedded message generated from data, or a simple embed showcasing the player is not currently in-game
         """
         game_data = self.api.summoners_current_game(self.summoner)
-
         if not game_data:
             return False
 
@@ -302,30 +301,14 @@ class SpectateEmbedApi(ApiEmbed):
             for participant in game_data.participants
             if participant.summoner_name.lower() == self.summoner.lower()
         ][0]
-        champ_data = [
-            data
-            for data in champions_data.data
-            if int(data.key) == summoner_data.champion_id
-        ][0]
-        game_mode = game_data.game_mode
-        summoner_name = summoner_data.summoner_name
-        champion_name = champ_data.name
 
+        champ_data = [value for value in champions_data.data.values() if int(value.key) == summoner_data.champion_id][0]
         title = "__Tracker__"
-        description = f"""
-        ```ini
-[Generalne informacje]
-        ```
-        **Nick:** {summoner_name}
-        **Mode:** {game_mode}
-        **Gra:** {champion_name}
-        """
+        description = f"```ini\n[Generalne Informacje]```\n\n**Nick:** {summoner_data.summoner_name}  \n\n**Mode:** {game_data.game_mode} \n\n**Gra:** {champ_data.name}"
+    
 
-        return (
-            discord.Embed(
-                title=title, description=description, color=discord.Color.dark_blue()
-            ),
-        )
+        embed = discord.Embed(title=title, description=description, color=discord.Color.dark_blue())
+        return embed
 
 
 class KillParticipationEmbedApi(ApiEmbed):

@@ -294,7 +294,7 @@ class SpectateEmbedApi(ApiEmbed):
         game_data = self.api.summoners_current_game(self.summoner)
 
         if not game_data:
-            return False, None
+            return False
 
         # ------------------------ Game Data -----------------------------------
         summoner_data = [
@@ -325,7 +325,6 @@ class SpectateEmbedApi(ApiEmbed):
             discord.Embed(
                 title=title, description=description, color=discord.Color.dark_blue()
             ),
-            game_data,
         )
 
 

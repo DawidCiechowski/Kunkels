@@ -49,15 +49,18 @@ class Tracker(commands.Cog, name='Tracker'):
     async def _team(self):
         """If any of team members are in game ->"""
         for member in TEAM:
+            # print(self.currently_playing[member])
             spectator_data = self.api.summoners_current_game(member)
 
             if spectator_data and spectator_data.game_id != self.currently_playing[member]:
-                embed = EmbedFactory.factory_embed(EmbedType.SPECTATE, self.api, member)
-                await self.send_embed_to_all_channels(embed.create_embed())
-                self.currently_playing[member] = spectator_data.game_id
-                continue
+                embed = EmbedFactory.factory_embed(EmbedType.SPECTATE, self.api, member).create_embed()
+                if embed:
+                    await self.send_embed_to_all_channels()
+                    self.currently_playing[member] = spectator_data.game_id
+                    continue
 
             if not spectator_data and self.currently_playing[member]:
+                embed = EmbedFactory.factory_embed(EmbedType.SUMMONER, self.api, member)
                 self.send_embed_to_all_channels(embed.create_embed())
                 self.currently_playing[member] = ""
                 continue

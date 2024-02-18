@@ -210,6 +210,7 @@ class SummonerEmbedApi(ApiEmbed):
             )
             if summoner_data.puuid == participant.puuid:
                 role = participant.role
+                minions = participant.total_minions_killed
                 deaths = participant.deaths
                 assists = participant.assists
                 kills = participant.kills
@@ -243,6 +244,7 @@ class SummonerEmbedApi(ApiEmbed):
                             **Poziom:** {summoner_data.summoner_level}
                             **Ostatni Mecz:** {match_timestamp}\n**Mode:** {game_mode}
                             **KDA:** {kills}/{deaths}/{assists}\n**Wygrana:** {win}
+                            **Miniony:** {minions}
                             **Champ:** {champion}
                             **Rola:** {role}
                             

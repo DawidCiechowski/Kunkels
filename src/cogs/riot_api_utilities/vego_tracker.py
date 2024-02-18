@@ -24,7 +24,7 @@ class Tracker(commands.Cog, name='Tracker'):
         description="Finds information in regards to a summoner",
     )
     async def _summoner(self, ctx, *summoner: str):
-        """Send information in regards to the summoner
+        """Send information last game data
 
         Args:
         -----
@@ -42,7 +42,6 @@ class Tracker(commands.Cog, name='Tracker'):
         await ctx.send(embed=embed)
 
     async def send_embed_to_all_channels(self, embed: discord.Embed):
-
         for channel in self.channels:
             await channel.send(embed=embed)
 
